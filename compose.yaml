@@ -1,0 +1,15 @@
+services:
+  php:
+    container_name: pulseops.php
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    volumes:
+      - ./:/app
+    environment:
+      SERVER_NAME: ${SERVER_NAME:-localhost}
+      XDEBUG_MODE: ${XDEBUG_MODE:-off}
+    ports:
+      - "8080:80"
+      - "8443:443"
+      - "8443:443/udp"

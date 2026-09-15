@@ -1,0 +1,20 @@
+{
+	frankenphp
+}
+
+http://{$SERVER_NAME:localhost} {
+	root * /app/public
+	encode zstd br gzip
+
+	@phpRoute {
+		not file {path}
+	}
+	rewrite @phpRoute index.php
+
+	@frontController path index.php
+	php @frontController
+
+	file_server {
+		hide *.php
+	}
+}
