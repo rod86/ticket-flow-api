@@ -1,0 +1,13 @@
+grumphp:
+    ascii:
+        failed: .grumphp/ascii-empty.txt
+        succeeded: .grumphp/ascii-empty.txt
+    tasks:
+        phpstan_docker:
+            metadata:
+                task: shell
+            scripts:
+                - ["-c", "make lint/stan"]
+        phpcsfixer:
+            config: .php-cs-fixer.dist.php
+            allow_risky: true
