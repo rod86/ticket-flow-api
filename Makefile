@@ -7,6 +7,7 @@ help: ## List all available Makefile commands
 
 # DOCKER
 .PHONY: build up stop bash
+
 build: ## Build docker containers
 	@docker compose build
 
@@ -24,8 +25,8 @@ bash: ## Go into docker service shell. Usage: make bash s=php
 
 
 # PROJECT
+.PHONY: install
 
-.PHONY: install autoload
 install: ## install composer dependencies
 	@$(PHP) composer install
 
@@ -34,7 +35,6 @@ autoload: ## Regenerate composer autoload file
 
 
 # TEST
-
 .PHONY: test/unit test/integration
 
 test: test/unit test/integration ## Execute all tests
@@ -44,3 +44,18 @@ test/unit: ## Execute unit tests
 
 test/integration: ## Execute integration tests
 	@$(PHP) bin/phpunit tests/Integration
+
+
+# CODE QUALITY
+.PHONY: lint/stan lint/cs lint/fix
+
+lint: lint/stan lint/cs lint/fix ## Run all quality checks
+
+lint/stan: ## Run PHPStan static analysis
+	@$(PHP) vendor/bin/phpstan analyse
+
+lint/cs: ## Check coding standards (dry-run)
+	@$(PHP) vendor/bin/php-cs-fixer fix --dry-run --diff
+
+lint/fix: ## Fix coding standards
+	@$(PHP) vendor/bin/php-cs-fixer fix
