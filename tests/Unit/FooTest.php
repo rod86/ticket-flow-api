@@ -10,6 +10,6 @@ class FooTest extends TestCase
 {
     public function testFoo(): void
     {
-        $this->assertTrue(true);
+        self::markTestIncomplete('temporary test');
     }
 }
