@@ -11,7 +11,10 @@ build: ## Build docker containers
 	@docker compose build
 
 up: ## Start docker containers
-	@docker compose up -d
+	@if grep -qi microsoft /proc/version 2>/dev/null; then \
+		export XDEBUG_CLIENT_HOST=$$(ip route show default | awk '{print $$3}'); \
+	fi; \
+	docker compose up -d
 
 stop: ## Stop docker container
 	@docker compose stop

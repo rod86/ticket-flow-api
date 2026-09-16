@@ -8,7 +8,7 @@ services:
       - ./:/app
     environment:
       SERVER_NAME: ${SERVER_NAME:-localhost}
-      XDEBUG_MODE: ${XDEBUG_MODE:-off}
+      XDEBUG_CONFIG: client_host=${XDEBUG_CLIENT_HOST:-}
     ports:
       - "8080:80"
       - "8443:443"
