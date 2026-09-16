@@ -9,4 +9,9 @@
 /vendor/
 ###< symfony/framework-bundle ###
 
-
+.DS_Store
+.idea/
+.vscode/
+*.swp
+coverage/
+.claude/
