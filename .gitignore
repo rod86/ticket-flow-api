@@ -1,4 +1,10 @@
 
+.DS_Store
+.idea/
+.vscode/
+*.swp
+.claude/
+
 ###> symfony/framework-bundle ###
 .env
 .env.*
@@ -9,16 +15,10 @@
 /vendor/
 ###< symfony/framework-bundle ###
 
-.DS_Store
-.idea/
-.vscode/
-*.swp
-coverage/
-.claude/
-
 ###> phpunit/phpunit ###
 /phpunit.xml
 /.phpunit.cache/
+coverage/
 ###< phpunit/phpunit ###
 
 ###> friendsofphp/php-cs-fixer ###
