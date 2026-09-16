@@ -1,7 +1,7 @@
 grumphp:
     ascii:
-        failed: .grumphp/ascii-empty.txt
-        succeeded: .grumphp/ascii-empty.txt
+        failed: .grumphp/failed.txt
+        succeeded: .grumphp/success.txt
     tasks:
         phpstan_docker:
             metadata:
