@@ -34,8 +34,7 @@ The app will be available at:
 
 ## Makefile Commands
 
-Run `make help` to list all available commands.
-
+- `make help`: List all available commands
 - `make build`: Build Docker containers
 - `make up`: Start Docker containers
 - `make stop`: Stop Docker containers
