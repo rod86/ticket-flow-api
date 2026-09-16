@@ -28,3 +28,16 @@ install: ## install composer dependencies
 
 autoload: ## Regenerate composer autoload file
 	@$(PHP) composer dump-autoload
+
+
+# TEST
+
+.PHONY: test/unit test/integration
+
+test: test/unit test/integration ## Execute all tests
+
+test/unit: ## Execute unit tests
+	@$(PHP) bin/phpunit tests/Unit
+
+test/integration: ## Execute integration tests
+	@$(PHP) bin/phpunit tests/Integration

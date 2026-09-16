@@ -6,10 +6,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class HomeController {
 
-    public function __invoke(): JsonResponse 
+    public function __invoke(): JsonResponse
     {
         return new JsonResponse([
-            "data" => "hello world"
+            "name" => "John Doe",
+            "age" => 25,
+            "is_active" => true
         ]);
     }
 }
