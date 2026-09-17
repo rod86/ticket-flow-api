@@ -17,7 +17,7 @@ use Symfony\Component\Messenger\Stamp\HandledStamp;
 
 class MessengerQueryBusTest extends TestCase
 {
-    public function testSendsQueryAndReturnsMessage(): void
+    public function testDispatchesQueryToMessageBus(): void
     {
         $query = $this->createStub(Query::class);
         $expectedResult = $this->createStub(Response::class);
@@ -37,7 +37,7 @@ class MessengerQueryBusTest extends TestCase
         $this->assertSame($expectedResult, $result);
     }
 
-    public function testHandlesExceptionWhenHandlerFails(): void
+    public function testUnwrapsPreviousExceptionOnHandlerFailure(): void
     {
         $query = $this->createStub(Query::class);
         $envelope = new Envelope($query, [
@@ -57,7 +57,7 @@ class MessengerQueryBusTest extends TestCase
         $queryBus->ask($query);
     }
 
-    public function testHandlesExceptionWhenNoHandlerFound(): void
+    public function testThrowsWhenNoHandlerRegistered(): void
     {
         $query = $this->createStub(Query::class);
         $exception = new QueryHandlerNotRegisteredException($query::class);

@@ -16,7 +16,7 @@ use Symfony\Component\Messenger\Stamp\HandledStamp;
 
 class MessengerCommandBusTest extends TestCase
 {
-    public function testSendsCommand(): void
+    public function testDispatchesCommandToMessageBus(): void
     {
         $command = $this->createStub(Command::class);
         $envelope = new Envelope($command, [
@@ -35,7 +35,7 @@ class MessengerCommandBusTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    public function testHandlesExceptionWhenHandlerFails(): void
+    public function testUnwrapsPreviousExceptionOnHandlerFailure(): void
     {
         $command = $this->createStub(Command::class);
         $envelope = new Envelope($command, [
@@ -55,7 +55,7 @@ class MessengerCommandBusTest extends TestCase
         $commandBus->dispatch($command);
     }
 
-    public function testHandlesExceptionWhenNoHandlerFound(): void
+    public function testThrowsWhenNoHandlerRegistered(): void
     {
         $command = $this->createStub(Command::class);
         $exception = new CommandHandlerNotRegisteredException($command::class);
