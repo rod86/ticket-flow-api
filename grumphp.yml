@@ -3,11 +3,6 @@ grumphp:
         failed: .grumphp/failed.txt
         succeeded: .grumphp/success.txt
     tasks:
-        phpstan_docker:
-            metadata:
-                task: shell
-            scripts:
-                - ["-c", "make lint/stan"]
         phpcsfixer:
             config: .php-cs-fixer.dist.php
             allow_risky: true

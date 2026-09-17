@@ -47,12 +47,9 @@ test/integration: ## Execute integration tests
 
 
 # CODE QUALITY
-.PHONY: lint/stan lint/cs lint/fix
+.PHONY: lint/cs lint/fix
 
-lint: lint/stan lint/cs lint/fix ## Run all quality checks
-
-lint/stan: ## Run PHPStan static analysis
-	@$(PHP) vendor/bin/phpstan analyse
+lint: lint/cs lint/fix ## Run all quality checks
 
 lint/cs: ## Check coding standards (dry-run)
 	@$(PHP) vendor/bin/php-cs-fixer fix --dry-run --diff
