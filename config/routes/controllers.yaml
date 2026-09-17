@@ -1,4 +1,4 @@
 
 home:
     path: /
-    controller: App\Controller\HomeController
+    controller: App\UI\Http\Controller\HomeController
