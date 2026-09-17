@@ -1,4 +1,5 @@
 
 home:
-    path: /
-    controller: App\UI\Http\Controller\HomeController
+    path: /users
+    methods: [POST]
+    controller: App\UI\Http\Controller\Users\CreateUserController
