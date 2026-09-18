@@ -7,6 +7,7 @@ services:
     volumes:
       - ./:/app
     environment:
+      APP_ENV: ${APP_ENV:-dev}
       SERVER_NAME: ${SERVER_NAME:-localhost}
       XDEBUG_CONFIG: client_host=${XDEBUG_CLIENT_HOST:-}
     ports:
