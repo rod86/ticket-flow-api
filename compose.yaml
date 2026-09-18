@@ -1,6 +1,6 @@
 services:
   php:
-    container_name: pulseops.php
+    container_name: ticket-flow-api.php
     build:
       context: .
       dockerfile: docker/php/Dockerfile

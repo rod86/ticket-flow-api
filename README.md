@@ -1,6 +1,6 @@
-# Pulse Ops
+# Ticket Flow API
 
-A REST API for small engineering teams to manage production incidents.
+Customer support and helpdesk REST API
 
 ## Tech Stack
 
@@ -53,6 +53,6 @@ Xdebug is bundled in the PHP image and enabled by default.
     - *Host*: localhost
     - *Port*: 8080
     - Enable `Use path mappings` option and map project to server
-      **Example**: `//wsl.localhost/Ubuntu-26.04/home/sergi/projects/pulse-ops` -> `/app`
+      **Example**: `//wsl.localhost/Ubuntu-26.04/home/sergi/projects/ticket-flow-api` -> `/app`
 - Start listening for PHP debug connections, set a breakpoint and load a page
 
