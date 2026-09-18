@@ -1,5 +1,5 @@
 
 home:
-    path: /users
+    path: /tickets
     methods: [POST]
-    controller: App\UI\Http\Controller\Users\CreateUserController
+    controller: App\UI\Http\Controller\Tickets\CreateTicketController

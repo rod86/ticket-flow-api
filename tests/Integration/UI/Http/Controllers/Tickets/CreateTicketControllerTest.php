@@ -2,25 +2,27 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Integration\UI\Http\Controllers\Users;
+namespace App\Tests\Integration\UI\Http\Controllers\Tickets;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class CreateUserControllerTest extends WebTestCase
+class CreateTicketControllerTest extends WebTestCase
 {
-    public function testCreatesUser(): void
+    public function testCreatesTicket(): void
     {
         $data = [
-            'email' => 'johndoe@email',
-            'name' => 'John Doe',
-            'password' => '12345678',
+            'subject' => 'Test subject',
+            'body' => 'Lorem ipsum dolor sit amet.',
+            'customer_email' => 'johndoe@email',
+            'customer_name' => 'John Doe',
+            'category_id' => '2c1a9600-bb4c-4b70-9b92-d3bb5e0c837b',
         ];
 
         $client = static::createClient();
         $client->request(
             'POST',
-            '/users',
+            '/tickets',
             server: ['CONTENT_TYPE' => 'application/json'],
             content: json_encode($data),
         );
