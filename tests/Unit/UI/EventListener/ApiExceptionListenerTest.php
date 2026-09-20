@@ -17,127 +17,121 @@ use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-class ApiExceptionListenerTest extends TestCase
+final class ApiExceptionListenerTest extends TestCase
 {
-    public function testNotHandlesExceptionWhenSubRequest(): void
+    public function testIgnoresSubRequests(): void
     {
-        $exception = new \RuntimeException('Could not handle exception');
-        $event = $this->createExceptionEvent($exception, false);
-        $eventListener = new ApiExceptionListener(debug: false);
-        $eventListener->__invoke($event);
+        $event = $this->dispatchEvent(
+            new \RuntimeException('Could not handle exception'),
+            false,
+            false
+        );
         $this->assertNull($event->getResponse());
     }
 
     public function testReturnsValidationErrors(): void
     {
-        $violations = new ConstraintViolationList([
-            new ConstraintViolation(
-                message: 'This value is not a valid email address.',
-                messageTemplate: 'This value is not a valid email address.',
-                parameters: [],
-                root: null,
-                propertyPath: 'email',
-                invalidValue: '',
-            ),
-            new ConstraintViolation(
-                message: 'This value should not be blank.',
-                messageTemplate: 'This value should not be blank.',
-                parameters: [],
-                root: null,
-                propertyPath: 'password',
-                invalidValue: '',
-            ),
-        ]);
-
-        $validationException = new ValidationFailedException(null, $violations);
+        $validationException = new ValidationFailedException(
+            null,
+            new ConstraintViolationList([
+                new ConstraintViolation(
+                    message: 'This value is not a valid email address.',
+                    messageTemplate: 'This value is not a valid email address.',
+                    parameters: [],
+                    root: null,
+                    propertyPath: 'email',
+                    invalidValue: '',
+                ),
+                new ConstraintViolation(
+                    message: 'This value should not be blank.',
+                    messageTemplate: 'This value should not be blank.',
+                    parameters: [],
+                    root: null,
+                    propertyPath: 'password',
+                    invalidValue: '',
+                ),
+            ])
+        );
         $exception = HttpException::fromStatusCode(
             Response::HTTP_UNPROCESSABLE_ENTITY,
             'Validation failed.',
             $validationException,
         );
-        $event = $this->createExceptionEvent($exception);
+        $event = $this->dispatchEvent($exception);
 
-        $eventListener = new ApiExceptionListener(debug: false);
-        $eventListener->__invoke($event);
-        $response = $event->getResponse();
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertSame(Response::HTTP_UNPROCESSABLE_ENTITY, $response->getStatusCode());
-        $this->assertSame(
+        $this->assertJsonResponse(
+            $event->getResponse(),
+            Response::HTTP_UNPROCESSABLE_ENTITY,
             [
                 'message' => 'Invalid Request Data',
                 'errors' => [
                     'email' => 'This value is not a valid email address.',
                     'password' => 'This value should not be blank.',
                 ],
-            ],
-            json_decode($response->getContent(), true),
+            ]
         );
     }
 
     public static function httpErrorsProvider(): \Generator
     {
-        yield 'with message' => [new HttpException(429, 'Too many requests. try later'), 'Too many requests. try later'];
-        yield 'message from status code' => [new HttpException(404), 'Not found'];
+        yield 'with message' => [new HttpException(Response::HTTP_TOO_MANY_REQUESTS, 'Too many requests. try later'), 'Too many requests. try later'];
+        yield 'message from status code' => [new HttpException(Response::HTTP_NOT_FOUND), 'Not found'];
     }
 
     #[DataProvider('httpErrorsProvider')]
-    public function testReturnsHttpErrors($exception, $expectedMessage): void
+    public function testReturnsHttpErrors(HttpException $exception, string $expectedMessage): void
     {
-        $code = $exception->getStatusCode();
-        $event = $this->createExceptionEvent($exception);
+        $event = $this->dispatchEvent($exception);
 
-        $eventListener = new ApiExceptionListener(debug: false);
-        $eventListener->__invoke($event);
-        $response = $event->getResponse();
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertSame($code, $response->getStatusCode());
-        $this->assertSame(
-            [
-                'message' => $expectedMessage,
-            ],
-            json_decode($response->getContent(), true),
-        );
-    }
-
-    private function createExceptionEvent(\Throwable $exception, bool $isMainRequest = true): ExceptionEvent
-    {
-        return new ExceptionEvent(
-            $this->createMock(HttpKernelInterface::class),
-            Request::create('/endpoint', 'POST'),
-            $isMainRequest ? HttpKernelInterface::MAIN_REQUEST : HttpKernelInterface::SUB_REQUEST,
-            $exception,
+        $this->assertJsonResponse(
+            $event->getResponse(),
+            $exception->getStatusCode(),
+            ['message' => $expectedMessage]
         );
     }
 
     public function testReturnsUnhandledErrorsWhenDebugIsOff(): void
     {
         $exception = new \RuntimeException('Could not handle exception');
-        $event = $this->createExceptionEvent($exception);
+        $event = $this->dispatchEvent($exception);
 
-        $eventListener = new ApiExceptionListener(debug: false);
-        $eventListener->__invoke($event);
-        $response = $event->getResponse();
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertSame(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
-        $this->assertSame(
-            [
-                'message' => 'Internal Server Error',
-            ],
-            json_decode($response->getContent(), true),
+        $this->assertJsonResponse(
+            $event->getResponse(),
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            ['message' => 'Internal Server Error']
         );
     }
 
     public function testLeavesExceptionWhenDebugIsOn(): void
     {
         $exception = new \RuntimeException('Could not handle exception');
-        $event = $this->createExceptionEvent($exception);
-
-        $eventListener = new ApiExceptionListener(debug: true);
-        $eventListener->__invoke($event);
+        $event = $this->dispatchEvent($exception, true);
 
         $this->assertNull($event->getResponse());
+    }
+
+    private function dispatchEvent(\Throwable $exception, bool $debug = false, bool $isMainRequest = true): ExceptionEvent
+    {
+        $event = new ExceptionEvent(
+            $this->createMock(HttpKernelInterface::class),
+            Request::create('/endpoint', 'POST'),
+            $isMainRequest ? HttpKernelInterface::MAIN_REQUEST : HttpKernelInterface::SUB_REQUEST,
+            $exception,
+        );
+
+        $eventListener = new ApiExceptionListener($debug);
+        $eventListener($event);
+
+        return $event;
+    }
+
+    private function assertJsonResponse(?Response $response, int $expectedStatus, array $expectedBody): void
+    {
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertSame($expectedStatus, $response->getStatusCode());
+        $this->assertSame(
+            json_decode($response->getContent(), true),
+            $expectedBody
+        );
     }
 }
