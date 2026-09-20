@@ -23,7 +23,6 @@ class ApiExceptionListenerTest extends TestCase
     {
         $exception = new \RuntimeException('Could not handle exception');
         $event = $this->createExceptionEvent($exception, false);
-        $listener = new ApiExceptionListener(true);
         $eventListener = new ApiExceptionListener(debug: false);
         $eventListener->__invoke($event);
         $this->assertNull($event->getResponse());
