@@ -12,8 +12,6 @@ final class CreateTicketController
 {
     public function __invoke(Request $request): JsonResponse
     {
-        // $body = json_decode($request->getContent(), true);
-
         return new JsonResponse(null, Response::HTTP_CREATED);
     }
 }

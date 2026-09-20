@@ -31,4 +31,25 @@ class CreateTicketControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
         $this->assertSame('{}', $response);
     }
+
+    public function testReturnsValidationErrorsWhenMissingPayload(): void
+    {
+        $client = static::createClient();
+        $client->request(
+            method: 'POST',
+            uri: '/tickets',
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: json_encode([]),
+        );
+        $response = json_decode($client->getResponse()->getContent(), true);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertSame($response['errors'], [
+            'subject' => 'This value is required.',
+            'body' => 'This value is required.',
+            'customer_email' => 'This value is required.',
+            'customer_name' => 'This value is required.',
+            'category_id' => 'This value is required.',
+        ]);
+    }
 }

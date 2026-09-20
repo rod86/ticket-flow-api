@@ -10,6 +10,8 @@ services:
 
     App\:
         resource: '../src/'
+        exclude:
+            - '../src/UI/Http/Request'
 
     App\UI\Http\Controller\:
         resource: '../src/UI/Http/Controller/'
