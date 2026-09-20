@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\UI\RequestValidation;
+namespace App\Tests\Unit\UI\Http\ValueResolver;
 
-use App\UI\RequestValidation\JsonRequest;
-use App\UI\RequestValidation\JsonRequestValidatorValueResolver;
-use App\UI\RequestValidation\Validator;
+use App\UI\Http\Request\JsonRequest;
+use App\UI\Http\ValueResolver\JsonRequestValueResolver;
+use App\UI\Validation\Validator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class JsonRequestValidatorValueResolverTest extends TestCase
+class JsonRequestValueResolverTest extends TestCase
 {
     public function testItValidatesSuccessfully(): void
     {
@@ -31,7 +31,7 @@ class JsonRequestValidatorValueResolverTest extends TestCase
         $request = new Request(content: json_encode($body, \JSON_THROW_ON_ERROR));
         $argument = new ArgumentMetadata('request', $requestClass, false, false, null);
 
-        $resolver = new JsonRequestValidatorValueResolver($validator);
+        $resolver = new JsonRequestValueResolver($validator);
         $resolved = iterator_to_array($resolver->resolve($request, $argument));
 
         $this->assertCount(1, $resolved);

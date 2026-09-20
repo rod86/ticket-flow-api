@@ -112,7 +112,7 @@ final class ApiExceptionListenerTest extends TestCase
     private function dispatchEvent(\Throwable $exception, bool $debug = false, bool $isMainRequest = true): ExceptionEvent
     {
         $event = new ExceptionEvent(
-            $this->createMock(HttpKernelInterface::class),
+            $this->createStub(HttpKernelInterface::class),
             Request::create('/endpoint', 'POST'),
             $isMainRequest ? HttpKernelInterface::MAIN_REQUEST : HttpKernelInterface::SUB_REQUEST,
             $exception,

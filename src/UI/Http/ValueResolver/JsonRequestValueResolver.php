@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\UI\RequestValidation;
+namespace App\UI\Http\ValueResolver;
 
+use App\UI\Validation\Validator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
-final readonly class JsonRequestValidatorValueResolver implements ValueResolverInterface
+final readonly class JsonRequestValueResolver implements ValueResolverInterface
 {
     public function __construct(
         private Validator $validator,
