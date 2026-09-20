@@ -19,6 +19,16 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 class ApiExceptionListenerTest extends TestCase
 {
+    public function testNotHandlesExceptionWhenSubRequest(): void
+    {
+        $exception = new \RuntimeException('Could not handle exception');
+        $event = $this->createExceptionEvent($exception, false);
+        $listener = new ApiExceptionListener(true);
+        $eventListener = new ApiExceptionListener(debug: false);
+        $eventListener->__invoke($event);
+        $this->assertNull($event->getResponse());
+    }
+
     public function testReturnsValidationErrors(): void
     {
         $violations = new ConstraintViolationList([
@@ -92,12 +102,12 @@ class ApiExceptionListenerTest extends TestCase
         );
     }
 
-    private function createExceptionEvent(\Throwable $exception): ExceptionEvent
+    private function createExceptionEvent(\Throwable $exception, bool $isMainRequest = true): ExceptionEvent
     {
         return new ExceptionEvent(
             $this->createMock(HttpKernelInterface::class),
             Request::create('/endpoint', 'POST'),
-            HttpKernelInterface::MAIN_REQUEST,
+            $isMainRequest ? HttpKernelInterface::MAIN_REQUEST : HttpKernelInterface::SUB_REQUEST,
             $exception,
         );
     }

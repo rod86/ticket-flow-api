@@ -19,6 +19,10 @@ final class ApiExceptionListener
 
     public function __invoke(ExceptionEvent $event): void
     {
+        if (!$event->isMainRequest()) {
+            return;
+        }
+
         $exception = $event->getThrowable();
 
         if ($exception->getPrevious() instanceof ValidationFailedException) {
