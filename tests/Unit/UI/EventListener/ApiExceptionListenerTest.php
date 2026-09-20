@@ -26,6 +26,7 @@ final class ApiExceptionListenerTest extends TestCase
             false,
             false
         );
+
         $this->assertNull($event->getResponse());
     }
 
@@ -92,8 +93,7 @@ final class ApiExceptionListenerTest extends TestCase
 
     public function testReturnsUnhandledErrorsWhenDebugIsOff(): void
     {
-        $exception = new \RuntimeException('Could not handle exception');
-        $event = $this->dispatchEvent($exception);
+        $event = $this->dispatchEvent(new \RuntimeException('Could not handle exception'));
 
         $this->assertJsonResponse(
             $event->getResponse(),
@@ -104,8 +104,7 @@ final class ApiExceptionListenerTest extends TestCase
 
     public function testLeavesExceptionWhenDebugIsOn(): void
     {
-        $exception = new \RuntimeException('Could not handle exception');
-        $event = $this->dispatchEvent($exception, true);
+        $event = $this->dispatchEvent(new \RuntimeException('Could not handle exception'), true);
 
         $this->assertNull($event->getResponse());
     }
@@ -130,8 +129,8 @@ final class ApiExceptionListenerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertSame($expectedStatus, $response->getStatusCode());
         $this->assertSame(
-            json_decode($response->getContent(), true),
-            $expectedBody
+            $expectedBody,
+            json_decode($response->getContent(), true)
         );
     }
 }
