@@ -12,6 +12,11 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 final class ApiExceptionListener
 {
+    public function __construct(
+        private bool $debug,
+    ) {
+    }
+
     public function __invoke(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
@@ -41,6 +46,12 @@ final class ApiExceptionListener
                 ['message' => $message],
                 $code,
             ));
+
+            return;
+        }
+
+        if ($this->debug) {
+            return; // Keep Symfony debug page while developing
         }
 
         $event->setResponse(new JsonResponse(

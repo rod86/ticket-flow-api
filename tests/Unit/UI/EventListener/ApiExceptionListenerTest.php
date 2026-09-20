@@ -48,7 +48,7 @@ class ApiExceptionListenerTest extends TestCase
         );
         $event = $this->createExceptionEvent($exception);
 
-        $eventListener = new ApiExceptionListener();
+        $eventListener = new ApiExceptionListener(debug: false);
         $eventListener->__invoke($event);
         $response = $event->getResponse();
 
@@ -78,7 +78,7 @@ class ApiExceptionListenerTest extends TestCase
         $code = $exception->getStatusCode();
         $event = $this->createExceptionEvent($exception);
 
-        $eventListener = new ApiExceptionListener();
+        $eventListener = new ApiExceptionListener(debug: false);
         $eventListener->__invoke($event);
         $response = $event->getResponse();
 
@@ -102,12 +102,12 @@ class ApiExceptionListenerTest extends TestCase
         );
     }
 
-    public function testReturnsUnhandledErrors(): void
+    public function testReturnsUnhandledErrorsWhenDebugIsOff(): void
     {
         $exception = new \RuntimeException('Could not handle exception');
         $event = $this->createExceptionEvent($exception);
 
-        $eventListener = new ApiExceptionListener();
+        $eventListener = new ApiExceptionListener(debug: false);
         $eventListener->__invoke($event);
         $response = $event->getResponse();
 
@@ -119,5 +119,16 @@ class ApiExceptionListenerTest extends TestCase
             ],
             json_decode($response->getContent(), true),
         );
+    }
+
+    public function testLeavesExceptionWhenDebugIsOn(): void
+    {
+        $exception = new \RuntimeException('Could not handle exception');
+        $event = $this->createExceptionEvent($exception);
+
+        $eventListener = new ApiExceptionListener(debug: true);
+        $eventListener->__invoke($event);
+
+        $this->assertNull($event->getResponse());
     }
 }
