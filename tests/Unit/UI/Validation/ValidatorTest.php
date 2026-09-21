@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\UI\Validation;
 
-use App\UI\Validation\DataValidator;
+use App\UI\Validation\Validator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-final class DataValidatorTest extends TestCase
+final class ValidatorTest extends TestCase
 {
     public function testDataPassesValidation(): void
     {
@@ -25,7 +25,7 @@ final class DataValidatorTest extends TestCase
             ->with($data, $constraints)
             ->willReturn($violations);
 
-        $validator = new DataValidator($symfonyValidatorMock);
+        $validator = new Validator($symfonyValidatorMock);
         $result = $validator->validate($data, $constraints);
 
         $this->assertSame([], $result);
@@ -64,7 +64,7 @@ final class DataValidatorTest extends TestCase
             ->with($data, $constraints)
             ->willReturn($violations);
 
-        $validator = new DataValidator($symfonyValidatorMock);
+        $validator = new Validator($symfonyValidatorMock);
         $result = $validator->validate($data, $constraints);
 
         $this->assertSame($expectedErrors, $result);

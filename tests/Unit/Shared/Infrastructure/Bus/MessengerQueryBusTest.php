@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Shared\Infrastructure\Bus;
 
-use App\Shared\Application\Bus\Query;
-use App\Shared\Application\Bus\Response;
+use App\Shared\Application\Bus\QueryInterface;
+use App\Shared\Application\Bus\ResponseInterface;
 use App\Shared\Infrastructure\Bus\Exception\QueryHandlerNotRegisteredException;
 use App\Shared\Infrastructure\Bus\MessengerQueryBus;
 use PHPUnit\Framework\TestCase;
@@ -19,8 +19,8 @@ class MessengerQueryBusTest extends TestCase
 {
     public function testDispatchesQueryToMessageBus(): void
     {
-        $query = $this->createStub(Query::class);
-        $expectedResult = $this->createStub(Response::class);
+        $query = $this->createStub(QueryInterface::class);
+        $expectedResult = $this->createStub(ResponseInterface::class);
         $envelope = new Envelope($query, [
             new HandledStamp($expectedResult, 'someHandler'),
         ]);
@@ -39,7 +39,7 @@ class MessengerQueryBusTest extends TestCase
 
     public function testUnwrapsPreviousExceptionOnHandlerFailure(): void
     {
-        $query = $this->createStub(Query::class);
+        $query = $this->createStub(QueryInterface::class);
         $envelope = new Envelope($query, [
             new HandledStamp([], 'someHandler'),
         ]);
@@ -59,7 +59,7 @@ class MessengerQueryBusTest extends TestCase
 
     public function testThrowsWhenNoHandlerRegistered(): void
     {
-        $query = $this->createStub(Query::class);
+        $query = $this->createStub(QueryInterface::class);
         $exception = new QueryHandlerNotRegisteredException($query::class);
 
         $messageBus = $this->createMock(MessageBusInterface::class);

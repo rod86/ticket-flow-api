@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Shared\Infrastructure\Bus;
 
-use App\Shared\Application\Bus\Query;
+use App\Shared\Application\Bus\QueryInterface;
 use App\Shared\Application\Bus\QueryBusInterface;
-use App\Shared\Application\Bus\Response;
+use App\Shared\Application\Bus\ResponseInterface;
 use App\Shared\Infrastructure\Bus\Exception\QueryHandlerNotRegisteredException;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\Exception\NoHandlerForMessageException;
@@ -20,7 +20,7 @@ final readonly class MessengerQueryBus implements QueryBusInterface
     ) {
     }
 
-    public function ask(Query $query): ?Response
+    public function ask(QueryInterface $query): ?ResponseInterface
     {
         try {
             $envelope = $this->messageBus->dispatch($query);

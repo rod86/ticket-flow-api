@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Shared\Infrastructure\Bus;
 
-use App\Shared\Application\Bus\Command;
+use App\Shared\Application\Bus\CommandInterface;
 use App\Shared\Infrastructure\Bus\Exception\CommandHandlerNotRegisteredException;
 use App\Shared\Infrastructure\Bus\MessengerCommandBus;
 use PHPUnit\Framework\TestCase;
@@ -18,7 +18,7 @@ class MessengerCommandBusTest extends TestCase
 {
     public function testDispatchesCommandToMessageBus(): void
     {
-        $command = $this->createStub(Command::class);
+        $command = $this->createStub(CommandInterface::class);
         $envelope = new Envelope($command, [
             new HandledStamp(null, 'someHandler'),
         ]);
@@ -37,7 +37,7 @@ class MessengerCommandBusTest extends TestCase
 
     public function testUnwrapsPreviousExceptionOnHandlerFailure(): void
     {
-        $command = $this->createStub(Command::class);
+        $command = $this->createStub(CommandInterface::class);
         $envelope = new Envelope($command, [
             new HandledStamp(null, 'someHandler'),
         ]);
@@ -57,7 +57,7 @@ class MessengerCommandBusTest extends TestCase
 
     public function testThrowsWhenNoHandlerRegistered(): void
     {
-        $command = $this->createStub(Command::class);
+        $command = $this->createStub(CommandInterface::class);
         $exception = new CommandHandlerNotRegisteredException($command::class);
 
         $messageBus = $this->createMock(MessageBusInterface::class);

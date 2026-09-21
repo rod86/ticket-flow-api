@@ -6,5 +6,5 @@ namespace App\Shared\Application\Bus;
 
 interface QueryBusInterface
 {
-    public function ask(Query $query): ?Response;
+    public function ask(QueryInterface $query): ?ResponseInterface;
 }

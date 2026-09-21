@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Shared\Infrastructure\Bus;
 
-use App\Shared\Application\Bus\Command;
+use App\Shared\Application\Bus\CommandInterface;
 use App\Shared\Application\Bus\CommandBusInterface;
 use App\Shared\Infrastructure\Bus\Exception\CommandHandlerNotRegisteredException;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
@@ -18,7 +18,7 @@ final readonly class MessengerCommandBus implements CommandBusInterface
     ) {
     }
 
-    public function dispatch(Command $command): void
+    public function dispatch(CommandInterface $command): void
     {
         try {
             $this->messageBus->dispatch($command);

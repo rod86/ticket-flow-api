@@ -6,13 +6,13 @@ namespace App\UI\Http\Request;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-abstract class JsonRequest
+abstract readonly class AbstractJsonRequest
 {
     /**
      * @param array<string, mixed> $body
      */
     final public function __construct(
-        private readonly array $body
+        private array $body
     ) {
     }
 
