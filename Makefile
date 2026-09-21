@@ -48,10 +48,13 @@ test/integration: ## Execute integration tests
 # CODE QUALITY
 .PHONY: lint lint/check lint/fix
 
-lint: lint/fix lint/check ## Fix and check coding style
+lint: lint/stan lint/fix lint/check ## Run all quality
 
 lint/check: ## Check coding style
 	@$(PHP) vendor/bin/phpcs
 
 lint/fix: ## Fix coding standards
 	@$(PHP) vendor/bin/phpcbf
+
+lint/stan: ## Run PHPStan static analysis
+	@$(PHP) vendor/bin/phpstan analyse
