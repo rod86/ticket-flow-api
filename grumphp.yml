@@ -2,4 +2,10 @@ grumphp:
     ascii:
         failed: .grumphp/failed.txt
         succeeded: .grumphp/success.txt
-    tasks: {}
+    tasks:
+        shell:
+            scripts:
+                - [ "-c" ,"docker compose exec -T php vendor/bin/phpcs" ]
+            triggered_by: [ php ]
+            metadata:
+                label: phpcs
