@@ -30,11 +30,6 @@
         <exclude name="Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore"/>
     </rule>
 
-    <!-- Comparisons: only === and !== (bare implicit-true checks stay allowed) -->
-    <rule ref="Squiz.Operators.ComparisonOperatorUsage">
-        <exclude name="Squiz.Operators.ComparisonOperatorUsage.ImplicitTrue"/>
-    </rule>
-
     <!-- Strings: single quotes unless the string needs escapes or interpolation -->
     <rule ref="Squiz.Strings.DoubleQuoteUsage">
         <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar"/>

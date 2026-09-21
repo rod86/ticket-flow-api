@@ -46,9 +46,9 @@ test/integration: ## Execute integration tests
 	@$(PHP) bin/phpunit tests/Integration
 
 # CODE QUALITY
-.PHONY: lint/check lint/fix
+.PHONY: lint lint/check lint/fix
 
-lint: lint/check lint/fix ## Run all quality checks
+lint: lint/fix lint/check ## Fix and check coding style
 
 lint/check: ## Check coding style
 	@$(PHP) vendor/bin/phpcs
