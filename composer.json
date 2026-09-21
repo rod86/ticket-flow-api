@@ -19,6 +19,7 @@
     "require-dev": {
         "phpro/grumphp-shim": "^2.23",
         "phpunit/phpunit": "^13.3",
+        "squizlabs/php_codesniffer": "^4.0",
         "symfony/browser-kit": "7.4.*",
         "symfony/css-selector": "7.4.*"
     },

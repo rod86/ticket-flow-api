@@ -75,8 +75,14 @@ final class ApiExceptionListenerTest extends TestCase
 
     public static function httpErrorsProvider(): \Generator
     {
-        yield 'with message' => [new HttpException(Response::HTTP_TOO_MANY_REQUESTS, 'Too many requests. try later'), 'Too many requests. try later'];
-        yield 'message from status code' => [new HttpException(Response::HTTP_NOT_FOUND), 'Not found'];
+        yield 'with message' => [
+            new HttpException(Response::HTTP_TOO_MANY_REQUESTS, 'Too many requests. try later'),
+            'Too many requests. try later'
+        ];
+        yield 'message from status code' => [
+            new HttpException(Response::HTTP_NOT_FOUND),
+            'Not found'
+        ];
     }
 
     #[DataProvider('httpErrorsProvider')]
@@ -109,8 +115,11 @@ final class ApiExceptionListenerTest extends TestCase
         $this->assertNull($event->getResponse());
     }
 
-    private function dispatchEvent(\Throwable $exception, bool $debug = false, bool $isMainRequest = true): ExceptionEvent
-    {
+    private function dispatchEvent(
+        \Throwable $exception,
+        bool $debug = false,
+        bool $isMainRequest = true
+    ): ExceptionEvent {
         $event = new ExceptionEvent(
             $this->createStub(HttpKernelInterface::class),
             Request::create('/endpoint', 'POST'),

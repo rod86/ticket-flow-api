@@ -44,7 +44,7 @@ class JsonRequestValueResolverTest extends TestCase
      */
     private function fakeJsonRequest(): string
     {
-        return (new class([]) extends JsonRequest {
+        return (new class ([]) extends JsonRequest {
             public function constraints(): Assert\Collection
             {
                 return new Assert\Collection([
