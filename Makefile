@@ -44,3 +44,14 @@ test/unit: ## Execute unit tests
 
 test/integration: ## Execute integration tests
 	@$(PHP) bin/phpunit tests/Integration
+
+# CODE QUALITY
+.PHONY: lint/cs lint/fix
+
+lint: lint/check lint/fix ## Run all quality checks
+
+lint/check: ## Check coding style
+	@$(PHP) vendor/bin/phpcs
+
+lint/fix: ## Fix coding standards
+	@$(PHP) vendor/bin/phpcbf
