@@ -6,6 +6,7 @@ namespace App\Tests\Unit\UI\EventListener;
 
 use App\UI\EventListener\ApiExceptionListener;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
+use Throwable;
 
 final class ApiExceptionListenerTest extends TestCase
 {
@@ -115,8 +117,15 @@ final class ApiExceptionListenerTest extends TestCase
         $this->assertNull($event->getResponse());
     }
 
+    /**
+     * @param Throwable $exception
+     * @param bool $debug
+     * @param bool $isMainRequest
+     * @return ExceptionEvent
+     * @throws Exception
+     */
     private function dispatchEvent(
-        \Throwable $exception,
+        Throwable $exception,
         bool $debug = false,
         bool $isMainRequest = true
     ): ExceptionEvent {
@@ -133,6 +142,12 @@ final class ApiExceptionListenerTest extends TestCase
         return $event;
     }
 
+    /**
+     * @param Response|null $response
+     * @param int $expectedStatus
+     * @param array<string, mixed> $expectedBody
+     * @return void
+     */
     private function assertJsonResponse(?Response $response, int $expectedStatus, array $expectedBody): void
     {
         $this->assertInstanceOf(JsonResponse::class, $response);
