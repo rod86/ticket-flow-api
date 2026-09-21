@@ -5,7 +5,7 @@ grumphp:
     tasks:
         shell:
             scripts:
-                - [ "-c" ,"docker compose exec -T php vendor/bin/phpcs" ]
-            triggered_by: [ php ]
+                - .grumphp/phpcs-staged.sh
+            triggered_by: [php]
             metadata:
-                label: phpcs
+                label: phpcs (docker, staged files)
