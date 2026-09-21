@@ -1,3 +1,6 @@
+includes:
+    - vendor/spaze/phpstan-disallowed-calls/extension.neon
+
 parameters:
     level: 6
     paths:
@@ -6,3 +9,25 @@ parameters:
         - public/
         - src/
         - tests/
+    excludePaths:
+        # Generated / recipe-managed files
+        - config/bundles.php
+        - config/reference.php
+    # Debug helpers
+    disallowedFunctionCalls:
+        -
+            function: 'var_dump()'
+            message: 'Remove debug call.'
+        -
+            function: 'dd()'
+            message: 'Remove debug call.'
+        -
+            function: 'dump()'
+            message: 'Remove debug call.'
+        -
+            function: 'print_r()'
+            message: 'Remove debug call.'
+
+rules:
+    # File header: declare(strict_types=1) is mandatory
+    - Ergebnis\PHPStan\Rules\Files\DeclareStrictTypesRule

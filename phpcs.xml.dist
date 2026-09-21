@@ -10,9 +10,6 @@
 
     <rule ref="PSR12"/>
 
-    <!-- File header: declare(strict_types=1) is mandatory -->
-    <rule ref="Generic.PHP.RequireStrictTypes"/>
-
     <!-- Classes: one class per file, file named after the class -->
     <rule ref="Generic.Files.OneObjectStructurePerFile"/>
     <rule ref="Squiz.Classes.ClassFileName"/>
@@ -37,19 +34,6 @@
 
     <!-- Arrays: short syntax only -->
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
-
-    <!-- Debug helpers: warn only -->
-    <rule ref="Generic.PHP.ForbiddenFunctions">
-        <properties>
-            <property name="error" value="false"/>
-            <property name="forbiddenFunctions" type="array">
-                <element key="var_dump" value="null"/>
-                <element key="dd" value="null"/>
-                <element key="dump" value="null"/>
-                <element key="print_r" value="null"/>
-            </property>
-        </properties>
-    </rule>
 
     <file>bin/</file>
     <file>config/</file>
