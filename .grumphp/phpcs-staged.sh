@@ -9,5 +9,4 @@ if [ -z "$changed_files" ]; then
     exit 0
 fi
 
-git diff --cached --name-only --diff-filter=ACMR -z -- '*.php' \
-    | xargs -0 docker compose exec -T php vendor/bin/phpcs
+docker compose exec -T php vendor/bin/phpcs $changed_files
