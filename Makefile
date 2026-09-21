@@ -44,15 +44,3 @@ test/unit: ## Execute unit tests
 
 test/integration: ## Execute integration tests
 	@$(PHP) bin/phpunit tests/Integration
-
-
-# CODE QUALITY
-.PHONY: lint/cs lint/fix
-
-lint: lint/cs lint/fix ## Run all quality checks
-
-lint/cs: ## Check coding standards (dry-run)
-	@$(PHP) vendor/bin/php-cs-fixer fix --dry-run --diff
-
-lint/fix: ## Fix coding standards
-	@$(PHP) vendor/bin/php-cs-fixer fix
