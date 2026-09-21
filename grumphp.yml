@@ -4,13 +4,15 @@ grumphp:
         succeeded: .grumphp/success.txt
     tasks:
         phpstan:
+            scripts:
+                - .grumphp/phpstan-staged.sh
+            triggered_by: [ php ]
             metadata:
                 task: shell
-            scripts:
-                - [ "-c", "make lint/stan" ]
+                label: phpstan (docker, staged files)
         shell:
             scripts:
                 - .grumphp/phpcs-staged.sh
-            triggered_by: [php]
+            triggered_by: [ php ]
             metadata:
                 label: phpcs (docker, staged files)
