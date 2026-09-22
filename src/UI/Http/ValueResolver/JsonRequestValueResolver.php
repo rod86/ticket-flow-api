@@ -30,10 +30,16 @@ final readonly class JsonRequestValueResolver implements ValueResolverInterface
             return [];
         }*/
 
-        try {
-            $body = json_decode($request->getContent(), true, 512, \JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
-            throw new BadRequestHttpException('The request body contains invalid JSON.', $e);
+        $content = $request->getContent();
+
+        if (trim($content) === '') {
+            $body = [];
+        } else {
+            try {
+                $body = json_decode($request->getContent(), true, 512, \JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                throw new BadRequestHttpException('The request body contains invalid JSON.', $e);
+            }
         }
 
         /** @var AbstractJsonRequest $jsonRequest */

@@ -21,7 +21,7 @@ class JsonRequestValueResolverTest extends TestCase
             'email' => 'johndoe@example.com',
             'password' => 'cGFzc3dvcmQ=',
         ];
-        $httpRequest = new Request(content: json_encode($body, \JSON_THROW_ON_ERROR));
+        $httpRequest = Request::create(uri: '/test', method: 'POST', content: json_encode($body));
         $request = $this->fakeJsonRequest($httpRequest);
         $argument = new ArgumentMetadata('request', $request::class, false, false, null);
 
@@ -39,9 +39,9 @@ class JsonRequestValueResolverTest extends TestCase
         $this->assertSame($httpRequest, $resolved->httpRequest());
     }
 
-    public function testThrowsErrorWhenJsonParsingFails(): void
+    public function testMalformedJSONThrowsBadRequestException(): void
     {
-        $httpRequest = new Request(content: 'invalid json content');
+        $httpRequest = Request::create(uri: '/test', method: 'POST', content: 'invalid json content'); //
         $request = $this->fakeJsonRequest($httpRequest);
         $argument = new ArgumentMetadata('request', $request::class, false, false, null);
 
@@ -49,6 +49,24 @@ class JsonRequestValueResolverTest extends TestCase
 
         $this->expectExceptionObject(new BadRequestHttpException('The request body contains invalid JSON.'));
         iterator_to_array($resolver->resolve($httpRequest, $argument));
+    }
+
+    public function testEmptyBodyResolvesEmptyArray(): void
+    {
+        $httpRequest = Request::create(uri: '/test', method: 'POST', content: ' ');
+        $request = $this->fakeJsonRequest($httpRequest);
+        $argument = new ArgumentMetadata('request', $request::class, false, false, null);
+
+        $validator = $this->createMock(ValidatorInterface::class);
+        $validator->expects($this->once())
+            ->method('validate')
+            ->with([], $request->validationRules())
+            ->willReturn([]);
+
+        $resolver = new JsonRequestValueResolver($validator);
+        $resolved = array_first(iterator_to_array($resolver->resolve($httpRequest, $argument)));
+
+        $this->assertSame([], $resolved->body());
     }
 
     private function fakeJsonRequest(Request $httpRequest): AbstractJsonRequest
