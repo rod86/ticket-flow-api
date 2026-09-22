@@ -9,6 +9,7 @@ use App\UI\Validation\ValidatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 final readonly class JsonRequestValueResolver implements ValueResolverInterface
 {
@@ -29,7 +30,11 @@ final readonly class JsonRequestValueResolver implements ValueResolverInterface
             return [];
         }*/
 
-        $body = json_decode($request->getContent(), true);
+        try {
+            $body = json_decode($request->getContent(), true, 512, \JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw new BadRequestHttpException('The request body contains invalid JSON.', $e);
+        }
 
         /** @var AbstractJsonRequest $jsonRequest */
         $jsonRequest = new $type($body, $request);

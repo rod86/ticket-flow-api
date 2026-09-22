@@ -10,6 +10,7 @@ use App\UI\Validation\ValidatorInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class JsonRequestValueResolverTest extends TestCase
@@ -36,6 +37,18 @@ class JsonRequestValueResolverTest extends TestCase
         $this->assertInstanceOf($request::class, $resolved);
         $this->assertSame($body, $resolved->body());
         $this->assertSame($httpRequest, $resolved->httpRequest());
+    }
+
+    public function testThrowsErrorWhenJsonParsingFails(): void
+    {
+        $httpRequest = new Request(content: 'invalid json content');
+        $request = $this->fakeJsonRequest($httpRequest);
+        $argument = new ArgumentMetadata('request', $request::class, false, false, null);
+
+        $resolver = new JsonRequestValueResolver($this->createStub(ValidatorInterface::class));
+
+        $this->expectExceptionObject(new BadRequestHttpException('The request body contains invalid JSON.'));
+        iterator_to_array($resolver->resolve($httpRequest, $argument));
     }
 
     private function fakeJsonRequest(Request $httpRequest): AbstractJsonRequest
