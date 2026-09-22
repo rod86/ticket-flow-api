@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\UI\Validation;
+namespace App\Tests\Unit\UI\Http\Validation;
 
-use App\UI\Validation\ValidationErrorFormatterInterface;
-use App\UI\Validation\Validator;
+use App\UI\Http\Validation\RequestValidator;
+use App\UI\Http\Validation\ValidationErrorFormatterInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-final class ValidatorTest extends TestCase
+final class RequestValidatorTest extends TestCase
 {
     public function testDataPassesValidation(): void
     {
@@ -29,7 +29,7 @@ final class ValidatorTest extends TestCase
         $formatterMock->expects($this->never())
             ->method('format');
 
-        $validator = new Validator($symfonyValidatorMock, $formatterMock);
+        $validator = new RequestValidator($symfonyValidatorMock, $formatterMock);
         $result = $validator->validate($data, $rules);
 
         $this->assertSame([], $result);
@@ -65,7 +65,7 @@ final class ValidatorTest extends TestCase
             ->with($violations)
             ->willReturn($expectedErrors);
 
-        $validator = new Validator($symfonyValidatorMock, $formatterMock);
+        $validator = new RequestValidator($symfonyValidatorMock, $formatterMock);
         $result = $validator->validate($data, $rules);
 
         $this->assertSame($expectedErrors, $result);

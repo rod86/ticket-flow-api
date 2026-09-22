@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\UI\Validation;
+namespace App\UI\Http\Validation;
 
 use Symfony\Component\Validator\Constraint;
 
-interface ValidatorInterface
+interface RequestValidatorInterface
 {
     /**
      * @param array<string, mixed> $data Data to validate

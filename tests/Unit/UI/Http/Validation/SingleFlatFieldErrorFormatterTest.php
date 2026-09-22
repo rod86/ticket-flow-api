@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\UI\Validation;
+namespace App\Tests\Unit\UI\Http\Validation;
 
-use App\UI\Validation\SingleFlatFieldErrorFormatter;
+use App\UI\Http\Validation\SingleFlatFieldErrorFormatter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;

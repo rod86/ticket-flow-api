@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\UI\Http\ValueResolver;
 
 use App\UI\Http\Request\AbstractJsonRequest;
-use App\UI\Validation\ValidatorInterface;
+use App\UI\Http\Validation\RequestValidatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 final readonly class JsonRequestValueResolver implements ValueResolverInterface
 {
     public function __construct(
-        private ValidatorInterface $validator,
+        private RequestValidatorInterface $validator,
     ) {
     }
 

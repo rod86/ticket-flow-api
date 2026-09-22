@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\UI\EventListener;
+namespace App\Tests\Unit\UI\Http\EventListener;
 
-use App\UI\EventListener\ApiExceptionListener;
+use App\UI\Http\EventListener\ApiExceptionListener;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;

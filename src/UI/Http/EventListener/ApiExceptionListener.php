@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\UI\EventListener;
+namespace App\UI\Http\EventListener;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

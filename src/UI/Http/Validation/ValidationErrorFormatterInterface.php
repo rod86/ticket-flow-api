@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\UI\Validation;
+namespace App\UI\Http\Validation;
 
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 

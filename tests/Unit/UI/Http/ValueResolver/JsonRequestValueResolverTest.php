@@ -6,7 +6,7 @@ namespace App\Tests\Unit\UI\Http\ValueResolver;
 
 use App\UI\Http\Request\AbstractJsonRequest;
 use App\UI\Http\ValueResolver\JsonRequestValueResolver;
-use App\UI\Validation\ValidatorInterface;
+use App\UI\Http\Validation\RequestValidatorInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
@@ -25,7 +25,7 @@ class JsonRequestValueResolverTest extends TestCase
         $request = $this->fakeJsonRequest($httpRequest);
         $argument = new ArgumentMetadata('request', $request::class, false, false, null);
 
-        $validator = $this->createMock(ValidatorInterface::class);
+        $validator = $this->createMock(RequestValidatorInterface::class);
         $validator->expects($this->once())
             ->method('validate')
             ->with($body, $request->validationRules())
@@ -45,7 +45,7 @@ class JsonRequestValueResolverTest extends TestCase
         $request = $this->fakeJsonRequest($httpRequest);
         $argument = new ArgumentMetadata('request', $request::class, false, false, null);
 
-        $resolver = new JsonRequestValueResolver($this->createStub(ValidatorInterface::class));
+        $resolver = new JsonRequestValueResolver($this->createStub(RequestValidatorInterface::class));
 
         $this->expectExceptionObject(new BadRequestHttpException('The request body contains invalid JSON.'));
         iterator_to_array($resolver->resolve($httpRequest, $argument));
@@ -57,7 +57,7 @@ class JsonRequestValueResolverTest extends TestCase
         $request = $this->fakeJsonRequest($httpRequest);
         $argument = new ArgumentMetadata('request', $request::class, false, false, null);
 
-        $validator = $this->createMock(ValidatorInterface::class);
+        $validator = $this->createMock(RequestValidatorInterface::class);
         $validator->expects($this->once())
             ->method('validate')
             ->with([], $request->validationRules())
@@ -74,7 +74,7 @@ class JsonRequestValueResolverTest extends TestCase
         $request = Request::create(uri: '/test', method: 'POST', content: '');
         $argument = new ArgumentMetadata('request', $request::class, false, false, null);
 
-        $validator = $this->createMock(ValidatorInterface::class);
+        $validator = $this->createMock(RequestValidatorInterface::class);
         $validator->expects($this->never())->method('validate');
 
         $resolver = new JsonRequestValueResolver($validator);
