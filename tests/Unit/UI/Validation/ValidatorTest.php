@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\UI\Validation;
 
+use App\UI\Validation\ValidationErrorFormatterInterface;
 use App\UI\Validation\Validator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -16,16 +17,18 @@ final class ValidatorTest extends TestCase
     public function testDataPassesValidation(): void
     {
         $rules = ['name' => new Assert\NotBlank()];
-        $data = ['name' => 'john', 'age' => 20];
+        $data = ['name' => 'john'];
         $violations = new ConstraintViolationList();
 
         $symfonyValidatorMock = $this->createMock(ValidatorInterface::class);
+        $formatterMock = $this->createMock(ValidationErrorFormatterInterface::class);
         $symfonyValidatorMock->expects($this->once())
             ->method('validate')
             ->with($data, new Assert\Collection($rules))
             ->willReturn($violations);
+        $formatterMock->expects($this->never());
 
-        $validator = new Validator($symfonyValidatorMock);
+        $validator = new Validator($symfonyValidatorMock, $formatterMock);
         $result = $validator->validate($data, $rules);
 
         $this->assertSame([], $result);
@@ -34,36 +37,34 @@ final class ValidatorTest extends TestCase
     public function testDataFailsValidation(): void
     {
         $rules = ['name' => new Assert\NotBlank()];
-        $data = ['name' => 'john', 'age' => 20];
+        $data = ['name' => 'john'];
         $violations = new ConstraintViolationList([
             new ConstraintViolation(
                 message: 'This value should not be blank.',
-                messageTemplate: 'This value should not be blank.',
+                messageTemplate: null,
                 parameters: [],
                 root: null,
-                propertyPath: 'name',
+                propertyPath: '[name]',
                 invalidValue: '',
-            ),
-            new ConstraintViolation(
-                message: 'This value is not a integer.',
-                messageTemplate: 'This value is not a integer.',
-                parameters: [],
-                root: null,
-                propertyPath: 'age',
-                invalidValue: '',
-            ),
+            )
         ]);
+
         $expectedErrors = [
             'name' => 'This value should not be blank.',
-            'age' => 'This value is not a integer.',
         ];
 
         $symfonyValidatorMock = $this->createMock(ValidatorInterface::class);
+        $formatterMock = $this->createMock(ValidationErrorFormatterInterface::class);
         $symfonyValidatorMock->expects($this->once())
             ->method('validate')
             ->willReturn($violations);
 
-        $validator = new Validator($symfonyValidatorMock);
+        $formatterMock->expects($this->once())
+            ->method('format')
+            ->with($violations)
+            ->willReturn($expectedErrors);
+
+        $validator = new Validator($symfonyValidatorMock, $formatterMock);
         $result = $validator->validate($data, $rules);
 
         $this->assertSame($expectedErrors, $result);

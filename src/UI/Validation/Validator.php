@@ -11,22 +11,14 @@ use Symfony\Component\Validator\Validator\ValidatorInterface as SymfonyValidator
 final readonly class Validator implements ValidatorInterface
 {
     public function __construct(
-        private SymfonyValidatorInterface $validator
+        private SymfonyValidatorInterface $validator,
+        private ValidationErrorFormatterInterface $errorFormatter,
     ) {
     }
 
     public function validate(array $data, array $rules): array
     {
-        $errors = [];
         $violations = $this->validator->validate($data, new Assert\Collection($rules));
-        if ($violations->count()) {
-            /** @var ConstraintViolationInterface $violation */
-            foreach ($violations as $violation) {
-                $field = $violation->getPropertyPath();
-                $errors[$field] = $violation->getMessage();
-            }
-        }
-
-        return $errors;
+        return $violations->count() > 0 ? $this->errorFormatter->format($violations) : [];
     }
 }
