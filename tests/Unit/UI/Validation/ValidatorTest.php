@@ -26,7 +26,8 @@ final class ValidatorTest extends TestCase
             ->method('validate')
             ->with($data, new Assert\Collection($rules))
             ->willReturn($violations);
-        $formatterMock->expects($this->never());
+        $formatterMock->expects($this->never())
+            ->method('format');
 
         $validator = new Validator($symfonyValidatorMock, $formatterMock);
         $result = $validator->validate($data, $rules);
