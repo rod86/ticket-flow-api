@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\UI\Http\EventListener;
 
+use App\UI\Http\Validation\Exception\RequestValidationException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-final class ApiExceptionListener
+final readonly class ApiExceptionListener
 {
     public function __construct(
         private bool $debug,
@@ -25,32 +26,17 @@ final class ApiExceptionListener
 
         $exception = $event->getThrowable();
 
-        if ($exception->getPrevious() instanceof ValidationFailedException) {
-            $errors = [];
-            foreach ($exception->getPrevious()->getViolations() as $violation) {
-                $errors[$violation->getPropertyPath()] = $violation->getMessage();
+        if ($exception instanceof HttpExceptionInterface) {
+            $statusCode = $exception->getStatusCode();
+
+            $responseBody = [
+                'message' => $exception->getMessage() ?: Response::$statusTexts[$statusCode],
+            ];
+            if ($exception instanceof RequestValidationException) {
+                $responseBody['errors'] = $exception->getErrors();
             }
 
-            $event->setResponse(new JsonResponse(
-                [
-                    'message' => 'Invalid Request Data',
-                    'errors' => $errors,
-                ],
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-            ));
-
-            return;
-        }
-
-        if ($exception instanceof HttpExceptionInterface) {
-            $code = $exception->getStatusCode();
-            $message = $exception->getMessage() ?: ucfirst(strtolower(Response::$statusTexts[$code]));
-
-            $event->setResponse(new JsonResponse(
-                ['message' => $message],
-                $code,
-            ));
-
+            $event->setResponse(new JsonResponse($responseBody, $statusCode));
             return;
         }
 

@@ -13,7 +13,7 @@ final class RequestValidationException extends HttpException
     public function __construct(
         private readonly array $errors,
     ) {
-        parent::__construct(Response::HTTP_UNPROCESSABLE_ENTITY, 'Invalid Request Data');
+        parent::__construct(Response::HTTP_BAD_REQUEST, 'Invalid Request Data');
     }
 
     /** @return array<string, mixed> */
