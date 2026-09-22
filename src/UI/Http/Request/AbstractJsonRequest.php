@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\UI\Http\Request;
 
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraint;
 
 abstract readonly class AbstractJsonRequest
 {
@@ -12,7 +13,8 @@ abstract readonly class AbstractJsonRequest
      * @param array<string, mixed> $body
      */
     final public function __construct(
-        private array $body
+        private array $body,
+        private Request $httpRequest,
     ) {
     }
 
@@ -24,5 +26,11 @@ abstract readonly class AbstractJsonRequest
         return $this->body;
     }
 
-    abstract public function constraints(): Assert\Collection;
+    public function httpRequest(): Request
+    {
+        return $this->httpRequest;
+    }
+
+    /** @return array<string, Constraint|list<Constraint>> */
+    abstract public function validationRules(): array;
 }

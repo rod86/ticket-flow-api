@@ -20,38 +20,34 @@ class JsonRequestValueResolverTest extends TestCase
             'email' => 'johndoe@example.com',
             'password' => 'cGFzc3dvcmQ=',
         ];
-        $requestClass = $this->fakeJsonRequest();
+        $httpRequest = new Request(content: json_encode($body, \JSON_THROW_ON_ERROR));
+        $request = $this->fakeJsonRequest($httpRequest);
+        $argument = new ArgumentMetadata('request', $request::class, false, false, null);
 
         $validator = $this->createMock(ValidatorInterface::class);
         $validator->expects($this->once())
             ->method('validate')
-            ->with($body, $this->isInstanceOf(Assert\Collection::class))
+            ->with($body, $request->validationRules())
             ->willReturn([]);
 
-        $request = new Request(content: json_encode($body, \JSON_THROW_ON_ERROR));
-        $argument = new ArgumentMetadata('request', $requestClass, false, false, null);
-
         $resolver = new JsonRequestValueResolver($validator);
-        $resolved = iterator_to_array($resolver->resolve($request, $argument));
+        $resolved = array_first(iterator_to_array($resolver->resolve($httpRequest, $argument)));
 
-        $this->assertCount(1, $resolved);
-        $this->assertInstanceOf($requestClass, $resolved[0]);
-        $this->assertSame($body, $resolved[0]->body());
+        $this->assertInstanceOf($request::class, $resolved);
+        $this->assertSame($body, $resolved->body());
+        $this->assertSame($httpRequest, $resolved->httpRequest());
     }
 
-    /**
-     * @return class-string<AbstractJsonRequest>
-     */
-    private function fakeJsonRequest(): string
+    private function fakeJsonRequest(Request $httpRequest): AbstractJsonRequest
     {
-        return (new readonly class ([]) extends AbstractJsonRequest {
-            public function constraints(): Assert\Collection
+        return (new readonly class ([], $httpRequest) extends AbstractJsonRequest {
+            public function validationRules(): array
             {
-                return new Assert\Collection([
+                return [
                     'email' => [new Assert\NotBlank(), new Assert\Email()],
                     'password' => [new Assert\NotBlank()],
-                ]);
+                ];
             }
-        })::class;
+        });
     }
 }
