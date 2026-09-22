@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Unit\UI\Http\ValueResolver;
 
 use App\UI\Http\Request\AbstractJsonRequest;
+use App\UI\Http\Validation\Exception\RequestValidationException;
 use App\UI\Http\ValueResolver\JsonRequestValueResolver;
 use App\UI\Http\Validation\RequestValidatorInterface;
 use PHPUnit\Framework\TestCase;
@@ -81,6 +82,25 @@ final class JsonRequestValueResolverTest extends TestCase
         $resolved = iterator_to_array($resolver->resolve($request, $argument));
 
         $this->assertSame([], $resolved);
+    }
+
+    public function testItThrowsRequestValidationExceptionWhenErrorsNotEmpty(): void
+    {
+        $httpRequest = Request::create(uri: '/test', method: 'POST', content: ' ');
+        $request = $this->fakeJsonRequest($httpRequest);
+        $argument = new ArgumentMetadata('request', $request::class, false, false, null);
+        $errors = ['name' => 'This value should not be blank.'];
+
+        $validator = $this->createMock(RequestValidatorInterface::class);
+        $validator->expects($this->once())
+            ->method('validate')
+            ->with([], $request->validationRules())
+            ->willReturn($errors);
+
+        $this->expectExceptionObject(new RequestValidationException($errors));
+
+        $resolver = new JsonRequestValueResolver($validator);
+        iterator_to_array($resolver->resolve($httpRequest, $argument));
     }
 
     private function fakeJsonRequest(Request $httpRequest): AbstractJsonRequest

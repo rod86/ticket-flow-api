@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\UI\Http\ValueResolver;
 
 use App\UI\Http\Request\AbstractJsonRequest;
+use App\UI\Http\Validation\Exception\RequestValidationException;
 use App\UI\Http\Validation\RequestValidatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
@@ -22,6 +23,7 @@ final readonly class JsonRequestValueResolver implements ValueResolverInterface
      * @param Request $request
      * @param ArgumentMetadata $argument
      * @return iterable<AbstractJsonRequest>
+     * @throws RequestValidationException
      */
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
@@ -44,7 +46,10 @@ final readonly class JsonRequestValueResolver implements ValueResolverInterface
 
         $jsonRequest = new $type($body, $request);
 
-        $this->validator->validate($body, $jsonRequest->validationRules());
+        $errors = $this->validator->validate($body, $jsonRequest->validationRules());
+        if (!empty($errors)) {
+            throw new RequestValidationException($errors);
+        }
 
         yield $jsonRequest;
     }
