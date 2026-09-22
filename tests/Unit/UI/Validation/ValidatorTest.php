@@ -22,7 +22,7 @@ final class ValidatorTest extends TestCase
         $symfonyValidatorMock = $this->createMock(ValidatorInterface::class);
         $symfonyValidatorMock->expects($this->once())
             ->method('validate')
-            ->with($data, $rules)
+            ->with($data, new Assert\Collection($rules))
             ->willReturn($violations);
 
         $validator = new Validator($symfonyValidatorMock);
@@ -61,7 +61,6 @@ final class ValidatorTest extends TestCase
         $symfonyValidatorMock = $this->createMock(ValidatorInterface::class);
         $symfonyValidatorMock->expects($this->once())
             ->method('validate')
-            ->with($data, $rules)
             ->willReturn($violations);
 
         $validator = new Validator($symfonyValidatorMock);

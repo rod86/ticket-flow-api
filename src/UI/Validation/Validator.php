@@ -18,7 +18,7 @@ final readonly class Validator implements ValidatorInterface
     public function validate(array $data, array $rules): array
     {
         $errors = [];
-        $violations = $this->validator->validate($data, $rules);
+        $violations = $this->validator->validate($data, new Assert\Collection($rules));
         if ($violations->count()) {
             /** @var ConstraintViolationInterface $violation */
             foreach ($violations as $violation) {
