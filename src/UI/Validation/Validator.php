@@ -15,7 +15,7 @@ final readonly class Validator implements ValidatorInterface
     ) {
     }
 
-    public function validate(array $data, Assert\Collection $rules): array
+    public function validate(array $data, array $rules): array
     {
         $errors = [];
         $violations = $this->validator->validate($data, $rules);

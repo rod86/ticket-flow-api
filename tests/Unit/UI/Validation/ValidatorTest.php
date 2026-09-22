@@ -15,25 +15,25 @@ final class ValidatorTest extends TestCase
 {
     public function testDataPassesValidation(): void
     {
-        $constraints = $this->createStub(Assert\Collection::class);
+        $rules = ['name' => new Assert\NotBlank()];
         $data = ['name' => 'john', 'age' => 20];
         $violations = new ConstraintViolationList();
 
         $symfonyValidatorMock = $this->createMock(ValidatorInterface::class);
         $symfonyValidatorMock->expects($this->once())
             ->method('validate')
-            ->with($data, $constraints)
+            ->with($data, $rules)
             ->willReturn($violations);
 
         $validator = new Validator($symfonyValidatorMock);
-        $result = $validator->validate($data, $constraints);
+        $result = $validator->validate($data, $rules);
 
         $this->assertSame([], $result);
     }
 
     public function testDataFailsValidation(): void
     {
-        $constraints = $this->createStub(Assert\Collection::class);
+        $rules = ['name' => new Assert\NotBlank()];
         $data = ['name' => 'john', 'age' => 20];
         $violations = new ConstraintViolationList([
             new ConstraintViolation(
@@ -61,11 +61,11 @@ final class ValidatorTest extends TestCase
         $symfonyValidatorMock = $this->createMock(ValidatorInterface::class);
         $symfonyValidatorMock->expects($this->once())
             ->method('validate')
-            ->with($data, $constraints)
+            ->with($data, $rules)
             ->willReturn($violations);
 
         $validator = new Validator($symfonyValidatorMock);
-        $result = $validator->validate($data, $constraints);
+        $result = $validator->validate($data, $rules);
 
         $this->assertSame($expectedErrors, $result);
     }
