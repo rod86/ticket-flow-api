@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class JsonRequestValueResolverTest extends TestCase
+final class JsonRequestValueResolverTest extends TestCase
 {
     public function testItValidatesSuccessfully(): void
     {

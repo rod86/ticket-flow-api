@@ -31,3 +31,13 @@ parameters:
 rules:
     # File header: declare(strict_types=1) is mandatory
     - Ergebnis\PHPStan\Rules\Files\DeclareStrictTypesRule
+
+services:
+    -
+        class: Ergebnis\PHPStan\Rules\Classes\FinalRule
+        arguments:
+            # Abstract classes are exempt (final + abstract is a contradiction).
+            allowAbstractClasses: true
+            classesNotRequiredToBeAbstractOrFinal: []
+        tags:
+            - phpstan.rules.rule

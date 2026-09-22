@@ -14,7 +14,7 @@ use Symfony\Component\Messenger\Exception\NoHandlerForMessageException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
 
-class MessengerCommandBusTest extends TestCase
+final class MessengerCommandBusTest extends TestCase
 {
     public function testDispatchesCommandToMessageBus(): void
     {

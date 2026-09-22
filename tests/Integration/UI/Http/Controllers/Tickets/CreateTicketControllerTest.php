@@ -7,7 +7,7 @@ namespace App\Tests\Integration\UI\Http\Controllers\Tickets;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class CreateTicketControllerTest extends WebTestCase
+final class CreateTicketControllerTest extends WebTestCase
 {
     public function testCreatesTicket(): void
     {

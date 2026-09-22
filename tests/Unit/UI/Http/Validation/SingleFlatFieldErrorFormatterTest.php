@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
-class SingleFlatFieldErrorFormatterTest extends TestCase
+final class SingleFlatFieldErrorFormatterTest extends TestCase
 {
     public function testFormatsErrors(): void
     {

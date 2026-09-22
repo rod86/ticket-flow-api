@@ -42,7 +42,6 @@ final readonly class JsonRequestValueResolver implements ValueResolverInterface
             }
         }
 
-        /** @var AbstractJsonRequest $jsonRequest */
         $jsonRequest = new $type($body, $request);
 
         $this->validator->validate($body, $jsonRequest->validationRules());
