@@ -26,9 +26,9 @@ final readonly class JsonRequestValueResolver implements ValueResolverInterface
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
         $type = $argument->getType();
-        /*if (null === $type || !is_subclass_of($type, JsonRequest::class)) {
+        if ($type === null || !is_subclass_of($type, AbstractJsonRequest::class)) {
             return [];
-        }*/
+        }
 
         $content = $request->getContent();
 

@@ -41,7 +41,7 @@ class JsonRequestValueResolverTest extends TestCase
 
     public function testMalformedJSONThrowsBadRequestException(): void
     {
-        $httpRequest = Request::create(uri: '/test', method: 'POST', content: 'invalid json content'); //
+        $httpRequest = Request::create(uri: '/test', method: 'POST', content: 'invalid json content');
         $request = $this->fakeJsonRequest($httpRequest);
         $argument = new ArgumentMetadata('request', $request::class, false, false, null);
 
@@ -67,6 +67,20 @@ class JsonRequestValueResolverTest extends TestCase
         $resolved = array_first(iterator_to_array($resolver->resolve($httpRequest, $argument)));
 
         $this->assertSame([], $resolved->body());
+    }
+
+    public function testOnlyRunsResolverWhenRequestIsJsonRequest(): void
+    {
+        $request = Request::create(uri: '/test', method: 'POST', content: '');
+        $argument = new ArgumentMetadata('request', $request::class, false, false, null);
+
+        $validator = $this->createMock(ValidatorInterface::class);
+        $validator->expects($this->never())->method('validate');
+
+        $resolver = new JsonRequestValueResolver($validator);
+        $resolved = iterator_to_array($resolver->resolve($request, $argument));
+
+        $this->assertSame([], $resolved);
     }
 
     private function fakeJsonRequest(Request $httpRequest): AbstractJsonRequest
