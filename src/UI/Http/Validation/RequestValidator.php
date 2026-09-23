@@ -18,7 +18,11 @@ final readonly class RequestValidator implements RequestValidatorInterface
 
     public function validate(array $data, array $rules): array
     {
-        $violations = $this->validator->validate($data, new Assert\Collection($rules));
+        $constraints = new Assert\Collection(
+            $rules,
+            missingFieldsMessage: 'This value is required.',
+        );
+        $violations = $this->validator->validate($data, $constraints);
         return $violations->count() > 0 ? $this->errorFormatter->format($violations) : [];
     }
 }

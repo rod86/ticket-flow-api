@@ -20,11 +20,16 @@ final class RequestValidatorTest extends TestCase
         $data = ['name' => 'john'];
         $violations = new ConstraintViolationList();
 
+        $constraints = new Assert\Collection(
+            $rules,
+            missingFieldsMessage: 'This value is required.',
+        );
+
         $symfonyValidatorMock = $this->createMock(ValidatorInterface::class);
         $formatterMock = $this->createMock(ValidationErrorFormatterInterface::class);
         $symfonyValidatorMock->expects($this->once())
             ->method('validate')
-            ->with($data, new Assert\Collection($rules))
+            ->with($data, $constraints)
             ->willReturn($violations);
         $formatterMock->expects($this->never())
             ->method('format');

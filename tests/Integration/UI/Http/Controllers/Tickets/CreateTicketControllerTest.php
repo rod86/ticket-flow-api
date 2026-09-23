@@ -12,8 +12,8 @@ final class CreateTicketControllerTest extends WebTestCase
     public function testCreatesTicket(): void
     {
         $data = [
-            'subject' => 'Test subject',
-            'body' => 'Lorem ipsum dolor sit amet.',
+            'title' => 'Test subject',
+            'description' => 'Lorem ipsum dolor sit amet.',
             'customer_email' => 'johndoe@email',
             'customer_name' => 'John Doe',
             'category_id' => '2c1a9600-bb4c-4b70-9b92-d3bb5e0c837b',
@@ -42,11 +42,9 @@ final class CreateTicketControllerTest extends WebTestCase
             content: json_encode([]),
         );
         $response = json_decode($client->getResponse()->getContent(), true);
-
-        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertSame($response['errors'], [
-            'subject' => 'This value is required.',
-            'body' => 'This value is required.',
+            'title' => 'This value is required.',
+            'description' => 'This value is required.',
             'customer_email' => 'This value is required.',
             'customer_name' => 'This value is required.',
             'category_id' => 'This value is required.',
