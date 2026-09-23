@@ -8,6 +8,7 @@ use App\Shared\Application\Bus\QueryInterface;
 use App\Shared\Application\Bus\ResponseInterface;
 use App\Shared\Infrastructure\Bus\Exception\QueryHandlerNotRegisteredException;
 use App\Shared\Infrastructure\Bus\MessengerQueryBus;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
@@ -34,7 +35,7 @@ final class MessengerQueryBusTest extends TestCase
         $queryBus = new MessengerQueryBus($messageBus);
         $result = $queryBus->ask($query);
 
-        $this->assertSame($expectedResult, $result);
+        Assert::assertSame($expectedResult, $result);
     }
 
     public function testUnwrapsPreviousExceptionOnHandlerFailure(): void

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Unit\UI\Http\Validation;
 
 use App\UI\Http\Validation\SingleFlatFieldErrorFormatter;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -38,7 +39,7 @@ final class SingleFlatFieldErrorFormatterTest extends TestCase
         $formatter = new SingleFlatFieldErrorFormatter();
         $result = $formatter->format($violations);
 
-        $this->assertSame($expectedErrors, $result);
+        Assert::assertSame($expectedErrors, $result);
     }
 
     private function buildConstraintsViolation(string $propertyPath, string $message): ConstraintViolation

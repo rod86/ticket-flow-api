@@ -6,6 +6,7 @@ namespace App\Tests\Unit\UI\Http\EventListener;
 
 use App\UI\Http\EventListener\ApiExceptionListener;
 use App\UI\Http\Validation\Exception\RequestValidationException;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -66,7 +67,7 @@ final class ApiExceptionListenerTest extends TestCase
             false
         );
 
-        $this->assertNull($event->getResponse());
+        Assert::assertNull($event->getResponse());
     }
 
     public function testHandlesUnhandledErrorsWhenDebugIsOff(): void
@@ -84,7 +85,7 @@ final class ApiExceptionListenerTest extends TestCase
     {
         $event = $this->dispatchEvent(new \RuntimeException('Could not handle exception'), true);
 
-        $this->assertNull($event->getResponse());
+        Assert::assertNull($event->getResponse());
     }
 
     /**
@@ -120,9 +121,9 @@ final class ApiExceptionListenerTest extends TestCase
      */
     private function assertJsonResponse(?Response $response, int $expectedStatus, array $expectedBody): void
     {
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertSame($expectedStatus, $response->getStatusCode());
-        $this->assertSame(
+        Assert::assertInstanceOf(JsonResponse::class, $response);
+        Assert::assertSame($expectedStatus, $response->getStatusCode());
+        Assert::assertSame(
             $expectedBody,
             json_decode($response->getContent(), true)
         );

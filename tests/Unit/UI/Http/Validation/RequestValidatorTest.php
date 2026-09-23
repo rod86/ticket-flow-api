@@ -6,8 +6,9 @@ namespace App\Tests\Unit\UI\Http\Validation;
 
 use App\UI\Http\Validation\RequestValidator;
 use App\UI\Http\Validation\ValidationErrorFormatterInterface;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -16,11 +17,11 @@ final class RequestValidatorTest extends TestCase
 {
     public function testDataPassesValidation(): void
     {
-        $rules = ['name' => new Assert\NotBlank()];
+        $rules = ['name' => new Constraints\NotBlank()];
         $data = ['name' => 'john'];
         $violations = new ConstraintViolationList();
 
-        $constraints = new Assert\Collection(
+        $constraints = new Constraints\Collection(
             $rules,
             missingFieldsMessage: 'This value is required.',
         );
@@ -37,12 +38,12 @@ final class RequestValidatorTest extends TestCase
         $validator = new RequestValidator($symfonyValidatorMock, $formatterMock);
         $result = $validator->validate($data, $rules);
 
-        $this->assertSame([], $result);
+        Assert::assertSame([], $result);
     }
 
     public function testDataFailsValidation(): void
     {
-        $rules = ['name' => new Assert\NotBlank()];
+        $rules = ['name' => new Constraints\NotBlank()];
         $data = ['name' => 'john'];
         $violations = new ConstraintViolationList([
             new ConstraintViolation(
@@ -73,6 +74,6 @@ final class RequestValidatorTest extends TestCase
         $validator = new RequestValidator($symfonyValidatorMock, $formatterMock);
         $result = $validator->validate($data, $rules);
 
-        $this->assertSame($expectedErrors, $result);
+        Assert::assertSame($expectedErrors, $result);
     }
 }

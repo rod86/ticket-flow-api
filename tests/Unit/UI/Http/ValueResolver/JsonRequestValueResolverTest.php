@@ -8,11 +8,12 @@ use App\UI\Http\Request\AbstractJsonRequest;
 use App\UI\Http\Validation\Exception\RequestValidationException;
 use App\UI\Http\ValueResolver\JsonRequestValueResolver;
 use App\UI\Http\Validation\RequestValidatorInterface;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints;
 
 final class JsonRequestValueResolverTest extends TestCase
 {
@@ -35,9 +36,9 @@ final class JsonRequestValueResolverTest extends TestCase
         $resolver = new JsonRequestValueResolver($validator);
         $resolved = array_first(iterator_to_array($resolver->resolve($httpRequest, $argument)));
 
-        $this->assertInstanceOf($request::class, $resolved);
-        $this->assertSame($body, $resolved->body());
-        $this->assertSame($httpRequest, $resolved->httpRequest());
+        Assert::assertInstanceOf($request::class, $resolved);
+        Assert::assertSame($body, $resolved->body());
+        Assert::assertSame($httpRequest, $resolved->httpRequest());
     }
 
     public function testMalformedJSONThrowsBadRequestException(): void
@@ -67,7 +68,7 @@ final class JsonRequestValueResolverTest extends TestCase
         $resolver = new JsonRequestValueResolver($validator);
         $resolved = array_first(iterator_to_array($resolver->resolve($httpRequest, $argument)));
 
-        $this->assertSame([], $resolved->body());
+        Assert::assertSame([], $resolved->body());
     }
 
     public function testOnlyRunsResolverWhenRequestIsJsonRequest(): void
@@ -81,7 +82,7 @@ final class JsonRequestValueResolverTest extends TestCase
         $resolver = new JsonRequestValueResolver($validator);
         $resolved = iterator_to_array($resolver->resolve($request, $argument));
 
-        $this->assertSame([], $resolved);
+        Assert::assertSame([], $resolved);
     }
 
     public function testItThrowsRequestValidationExceptionWhenErrorsNotEmpty(): void
@@ -109,8 +110,8 @@ final class JsonRequestValueResolverTest extends TestCase
             public function validationRules(): array
             {
                 return [
-                    'email' => [new Assert\NotBlank(), new Assert\Email()],
-                    'password' => [new Assert\NotBlank()],
+                    'email' => [new Constraints\NotBlank(), new Constraints\Email()],
+                    'password' => [new Constraints\NotBlank()],
                 ];
             }
         });

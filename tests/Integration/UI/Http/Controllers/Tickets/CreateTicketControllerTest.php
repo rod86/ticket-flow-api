@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\UI\Http\Controllers\Tickets;
 
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +31,7 @@ final class CreateTicketControllerTest extends WebTestCase
         $response = $client->getResponse()->getContent();
 
         self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
-        self::assertSame('{}', $response);
+        Assert::assertSame('{}', $response);
     }
 
     public function testReturnsValidationErrorsWhenMissingPayload(): void
@@ -43,7 +44,7 @@ final class CreateTicketControllerTest extends WebTestCase
             content: json_encode([]),
         );
         $response = json_decode($client->getResponse()->getContent(), true);
-        self::assertSame([
+        Assert::assertSame([
             'title' => 'This value is required.',
             'description' => 'This value is required.',
             'customer_email' => 'This value is required.',
@@ -68,7 +69,7 @@ final class CreateTicketControllerTest extends WebTestCase
             content: json_encode($payload),
         );
         $response = json_decode($client->getResponse()->getContent(), true);
-        self::assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
+        Assert::assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
             $expectedErrors,
             $response['errors'],
             array_keys($expectedErrors)
