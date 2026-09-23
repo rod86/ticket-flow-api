@@ -14,9 +14,15 @@ final readonly class CreateTicketRequest extends AbstractJsonRequest
         return [
             'title' => new Assert\NotBlank(),
             'description' => new Assert\NotBlank(),
-            'customer_email' => new Assert\NotBlank(),
+            'customer_email' => [
+                new Assert\NotBlank(),
+                new Assert\Email(),
+            ],
             'customer_name' => new Assert\NotBlank(),
-            'category_id' => new Assert\NotBlank(),
+            'category_id' => [
+                new Assert\NotBlank(),
+                new Assert\Uuid(),
+            ],
         ];
     }
 }
