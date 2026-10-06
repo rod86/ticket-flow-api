@@ -6,8 +6,8 @@ namespace App\Tickets\Domain;
 
 enum TicketStatus: string
 {
-    case NEW = 'new';
-    case PENDING = 'pending';
+    case OPEN = 'open';
+    case PROCESS = 'process';
     case RESOLVED = 'resolved';
     case DISMISSED = 'dismissed';
 

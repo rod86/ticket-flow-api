@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Tickets\Application\Command\CreateTicket;
 
 use App\Tests\Lib\ModelFactory\CustomerModelFactory;
+use App\Tests\Lib\ModelFactory\TicketCategoryModelFactory;
 use App\Tests\Lib\ModelFactory\TicketModelFactory;
 use App\Tests\Lib\ValueGenerator\FakeValueGenerator;
 use App\Tickets\Application\Command\CreateTicket\CreateTicketCommand;
@@ -26,7 +27,7 @@ function createCommand(Ticket $ticket, Customer $customer): CreateTicketCommand
         customerId: $customer->id,
         customerName: $customer->name,
         customerEmail: $customer->email,
-        categoryId: $ticket->category->id,
+        categoryId: $ticket->categoryId,
         createdAt: $ticket->createdAt,
     );
 }
@@ -36,13 +37,15 @@ final class CreateTicketCommandHandlerTest extends TestCase
     public function testCreatesTicket(): void
     {
         $createdAt = FakeValueGenerator::dateTime();
+        $customer = CustomerModelFactory::create();
+        $category = TicketCategoryModelFactory::create();
         $ticket = TicketModelFactory::create(
-            status: TicketStatus::NEW,
+            status: TicketStatus::OPEN,
+            customerId: $customer->id,
+            categoryId: $category->id,
             createdAt: $createdAt,
             updatedAt: $createdAt,
         );
-        $customer = $ticket->customer;
-        $category = $ticket->category;
 
         $command = createCommand($ticket, $customer);
 

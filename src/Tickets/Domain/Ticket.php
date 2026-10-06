@@ -11,10 +11,30 @@ final readonly class Ticket
         public string $subject,
         public string $description,
         public TicketStatus $status,
-        public Customer $customer,
-        public TicketCategory $category,
+        public string $customerId,
+        public string $categoryId,
         public \DateTimeImmutable $createdAt,
         public \DateTimeImmutable $updatedAt,
     ) {
+    }
+
+    public static function open(
+        string $id,
+        string $subject,
+        string $description,
+        string $customerId,
+        string $categoryId,
+        \DateTimeImmutable $createdAt,
+    ): self {
+        return new self(
+            id: $id,
+            subject: $subject,
+            description: $description,
+            status: TicketStatus::OPEN,
+            customerId: $customerId,
+            categoryId: $categoryId,
+            createdAt: $createdAt,
+            updatedAt: $createdAt,
+        );
     }
 }

@@ -8,7 +8,6 @@ use App\Tickets\Domain\Interfaces\CustomerRepositoryInterface;
 use App\Tickets\Domain\Interfaces\TicketCategoryRepositoryInterface;
 use App\Tickets\Domain\Interfaces\TicketRepositoryInterface;
 use App\Tickets\Domain\Ticket;
-use App\Tickets\Domain\TicketStatus;
 
 final readonly class CreateTicketCommandHandler
 {
@@ -24,15 +23,13 @@ final readonly class CreateTicketCommandHandler
         $customer = $this->customerRepository->findByEmail($command->customerEmail);
         $category = $this->ticketCategoryRepository->findById($command->categoryId);
         $this->repository->create(
-            new Ticket(
+            Ticket::open(
                 id: $command->id,
                 subject: $command->subject,
                 description: $command->description,
-                status: TicketStatus::NEW,
-                customer: $customer,
-                category: $category,
+                customerId: $customer->id,
+                categoryId: $category->id,
                 createdAt: $command->createdAt,
-                updatedAt: $command->createdAt,
             )
         );
     }
