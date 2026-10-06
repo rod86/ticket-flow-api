@@ -8,12 +8,38 @@ use App\Shared\Domain\Entity;
 
 final class Customer extends Entity
 {
+    /**
+     * @param string $id
+     * @param string $name
+     * @param string $email
+     * @param \DateTimeImmutable $createdAt
+     */
     public function __construct(
-        public readonly string $id,
-        public readonly string $name,
-        public readonly string $email,
-        public readonly \DateTimeImmutable $createdAt,
+        private string $id,
+        private string $name,
+        private string $email,
+        private \DateTimeImmutable $createdAt
     ) {
+    }
+
+    public function id(): string
+    {
+        return $this->id;
+    }
+
+    public function name(): string
+    {
+        return $this->name;
+    }
+
+    public function email(): string
+    {
+        return $this->email;
+    }
+
+    public function createdAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 
     public function toArray(): array

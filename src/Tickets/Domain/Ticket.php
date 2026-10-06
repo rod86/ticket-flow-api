@@ -9,15 +9,55 @@ use App\Shared\Domain\Entity;
 final class Ticket extends Entity
 {
     public function __construct(
-        public readonly string $id,
-        public readonly string $subject,
-        public readonly string $description,
-        public readonly TicketStatus $status,
-        public readonly string $customerId,
-        public readonly string $categoryId,
-        public readonly \DateTimeImmutable $createdAt,
-        public readonly \DateTimeImmutable $updatedAt,
+        private string $id,
+        private string $subject,
+        private string $description,
+        private TicketStatus $status,
+        private string $customerId,
+        private string $categoryId,
+        private \DateTimeImmutable $createdAt,
+        private \DateTimeImmutable $updatedAt,
     ) {
+    }
+
+    public function id(): string
+    {
+        return $this->id;
+    }
+
+    public function subject(): string
+    {
+        return $this->subject;
+    }
+
+    public function description(): string
+    {
+        return $this->description;
+    }
+
+    public function status(): TicketStatus
+    {
+        return $this->status;
+    }
+
+    public function customerId(): string
+    {
+        return $this->customerId;
+    }
+
+    public function categoryId(): string
+    {
+        return $this->categoryId;
+    }
+
+    public function createdAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function updatedAt(): \DateTimeImmutable
+    {
+        return $this->updatedAt;
     }
 
     public static function open(

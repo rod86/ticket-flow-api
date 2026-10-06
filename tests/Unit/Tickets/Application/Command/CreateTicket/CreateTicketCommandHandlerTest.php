@@ -22,14 +22,14 @@ use PHPUnit\Framework\TestCase;
 function createCommand(Ticket $ticket, Customer $customer): CreateTicketCommand
 {
     return new CreateTicketCommand(
-        id: $ticket->id,
-        subject: $ticket->subject,
-        description: $ticket->description,
-        customerId: $customer->id,
-        customerName: $customer->name,
-        customerEmail: $customer->email,
-        categoryId: $ticket->categoryId,
-        createdAt: $ticket->createdAt,
+        id: $ticket->id(),
+        subject: $ticket->subject(),
+        description: $ticket->description(),
+        customerId: $customer->id(),
+        customerName: $customer->name(),
+        customerEmail: $customer->email(),
+        categoryId: $ticket->categoryId(),
+        createdAt: $ticket->createdAt(),
     );
 }
 
@@ -42,8 +42,8 @@ final class CreateTicketCommandHandlerTest extends TestCase
         $category = TicketCategoryModelFactory::create();
         $ticket = TicketModelFactory::create(
             status: TicketStatus::OPEN,
-            customerId: $customer->id,
-            categoryId: $category->id,
+            customerId: $customer->id(),
+            categoryId: $category->id(),
             createdAt: $createdAt,
             updatedAt: $createdAt,
         );
@@ -53,7 +53,7 @@ final class CreateTicketCommandHandlerTest extends TestCase
         $customerRepository = $this->createMock(CustomerRepositoryInterface::class);
         $customerRepository->expects($this->once())
             ->method('findByEmail')
-            ->with($customer->email)
+            ->with($customer->email())
             ->willReturn($customer);
 
         $customerRepository->expects($this->never())
@@ -62,7 +62,7 @@ final class CreateTicketCommandHandlerTest extends TestCase
         $categoryRepository = $this->createMock(TicketCategoryRepositoryInterface::class);
         $categoryRepository->expects($this->once())
             ->method('findById')
-            ->with($category->id)
+            ->with($category->id())
             ->willReturn($category);
 
         $ticketRepository = $this->createMock(TicketRepositoryInterface::class);
@@ -85,8 +85,8 @@ final class CreateTicketCommandHandlerTest extends TestCase
         $category = TicketCategoryModelFactory::create();
         $ticket = TicketModelFactory::create(
             status: TicketStatus::OPEN,
-            customerId: $customer->id,
-            categoryId: $category->id,
+            customerId: $customer->id(),
+            categoryId: $category->id(),
             createdAt: $createdAt,
             updatedAt: $createdAt,
         );
@@ -96,7 +96,7 @@ final class CreateTicketCommandHandlerTest extends TestCase
         $customerRepository = $this->createMock(CustomerRepositoryInterface::class);
         $customerRepository->expects($this->once())
             ->method('findByEmail')
-            ->with($customer->email)
+            ->with($customer->email())
             ->willReturn(null);
 
         $customerRepository->expects($this->once())
@@ -106,7 +106,7 @@ final class CreateTicketCommandHandlerTest extends TestCase
         $categoryRepository = $this->createMock(TicketCategoryRepositoryInterface::class);
         $categoryRepository->expects($this->once())
             ->method('findById')
-            ->with($category->id)
+            ->with($category->id())
             ->willReturn($category);
 
         $ticketRepository = $this->createMock(TicketRepositoryInterface::class);
@@ -129,8 +129,8 @@ final class CreateTicketCommandHandlerTest extends TestCase
         $category = TicketCategoryModelFactory::create();
         $ticket = TicketModelFactory::create(
             status: TicketStatus::OPEN,
-            customerId: $customer->id,
-            categoryId: $category->id,
+            customerId: $customer->id(),
+            categoryId: $category->id(),
             createdAt: $createdAt,
             updatedAt: $createdAt,
         );
@@ -144,7 +144,7 @@ final class CreateTicketCommandHandlerTest extends TestCase
         $categoryRepository = $this->createMock(TicketCategoryRepositoryInterface::class);
         $categoryRepository->expects($this->once())
             ->method('findById')
-            ->with($category->id)
+            ->with($category->id())
             ->willReturn(null);
 
         $ticketRepository = $this->createStub(TicketRepositoryInterface::class);
@@ -157,7 +157,7 @@ final class CreateTicketCommandHandlerTest extends TestCase
         );
 
         $this->expectExceptionObject(
-            new TicketCategoryNotFoundException(sprintf('Ticket category "%s" not found.', $category->id))
+            TicketCategoryNotFoundException::withId($category->id())
         );
 
         $handler->__invoke($command);
