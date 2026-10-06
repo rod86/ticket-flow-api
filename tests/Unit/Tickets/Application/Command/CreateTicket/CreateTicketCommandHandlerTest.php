@@ -11,6 +11,7 @@ use App\Tests\Lib\ValueGenerator\FakeValueGenerator;
 use App\Tickets\Application\Command\CreateTicket\CreateTicketCommand;
 use App\Tickets\Application\Command\CreateTicket\CreateTicketCommandHandler;
 use App\Tickets\Domain\Customer;
+use App\Tickets\Domain\Exception\TicketCategoryNotFoundException;
 use App\Tickets\Domain\Interfaces\CustomerRepositoryInterface;
 use App\Tickets\Domain\Interfaces\TicketCategoryRepositoryInterface;
 use App\Tickets\Domain\Interfaces\TicketRepositoryInterface;
@@ -54,6 +55,9 @@ final class CreateTicketCommandHandlerTest extends TestCase
             ->method('findByEmail')
             ->with($customer->email)
             ->willReturn($customer);
+
+        $customerRepository->expects($this->never())
+            ->method('create');
 
         $categoryRepository = $this->createMock(TicketCategoryRepositoryInterface::class);
         $categoryRepository->expects($this->once())
@@ -115,6 +119,47 @@ final class CreateTicketCommandHandlerTest extends TestCase
             $customerRepository,
             $categoryRepository,
         );
+        $handler->__invoke($command);
+    }
+
+    public function testThrowsWhenCategoryDoesNotExist(): void
+    {
+        $createdAt = FakeValueGenerator::dateTime();
+        $customer = CustomerModelFactory::create(createdAt: $createdAt);
+        $category = TicketCategoryModelFactory::create();
+        $ticket = TicketModelFactory::create(
+            status: TicketStatus::OPEN,
+            customerId: $customer->id,
+            categoryId: $category->id,
+            createdAt: $createdAt,
+            updatedAt: $createdAt,
+        );
+
+        $command = createCommand($ticket, $customer);
+
+        $customerRepository = $this->createMock(CustomerRepositoryInterface::class);
+        $customerRepository->expects($this->never())
+            ->method('create');
+
+        $categoryRepository = $this->createMock(TicketCategoryRepositoryInterface::class);
+        $categoryRepository->expects($this->once())
+            ->method('findById')
+            ->with($category->id)
+            ->willReturn(null);
+
+        $ticketRepository = $this->createStub(TicketRepositoryInterface::class);
+
+
+        $handler = new CreateTicketCommandHandler(
+            $ticketRepository,
+            $customerRepository,
+            $categoryRepository,
+        );
+
+        $this->expectExceptionObject(
+            new TicketCategoryNotFoundException(sprintf('Ticket category "%s" not found.', $category->id))
+        );
+
         $handler->__invoke($command);
     }
 }
