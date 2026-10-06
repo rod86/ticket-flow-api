@@ -8,12 +8,6 @@ use App\Shared\Domain\Entity;
 
 final class Customer extends Entity
 {
-    /**
-     * @param string $id
-     * @param string $name
-     * @param string $email
-     * @param \DateTimeImmutable $createdAt
-     */
     public function __construct(
         private string $id,
         private string $name,
