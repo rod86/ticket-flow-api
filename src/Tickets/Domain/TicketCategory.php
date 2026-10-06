@@ -4,11 +4,21 @@ declare(strict_types=1);
 
 namespace App\Tickets\Domain;
 
-final readonly class TicketCategory
+use App\Shared\Domain\Entity;
+
+final class TicketCategory extends Entity
 {
     public function __construct(
-        public string $id,
-        public string $name,
+        public readonly string $id,
+        public readonly string $name,
     ) {
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+        ];
     }
 }

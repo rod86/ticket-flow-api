@@ -17,10 +17,9 @@
     <!-- Constants: UPPER_SNAKE_CASE (visibility is already enforced by PSR12) -->
     <rule ref="Generic.NamingConventions.UpperCaseConstantName"/>
 
-    <!-- Naming: Interface / Trait suffixes and Abstract prefix (methods are camelCase via PSR1) -->
+    <!-- Naming: Interface / Trait suffixes (methods are camelCase via PSR1) -->
     <rule ref="Generic.NamingConventions.InterfaceNameSuffix"/>
     <rule ref="Generic.NamingConventions.TraitNameSuffix"/>
-    <rule ref="Generic.NamingConventions.AbstractClassNamePrefix"/>
 
     <!-- Naming: camelCase properties and variables, no underscore prefix on private members -->
     <rule ref="Squiz.NamingConventions.ValidVariableName">
