@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tickets\Application\Command\CreateTicket;
 
+use App\Tickets\Domain\Customer;
 use App\Tickets\Domain\Interfaces\CustomerRepositoryInterface;
 use App\Tickets\Domain\Interfaces\TicketCategoryRepositoryInterface;
 use App\Tickets\Domain\Interfaces\TicketRepositoryInterface;
@@ -21,6 +22,16 @@ final readonly class CreateTicketCommandHandler
     public function __invoke(CreateTicketCommand $command): void
     {
         $customer = $this->customerRepository->findByEmail($command->customerEmail);
+        if (null === $customer) {
+            $customer = new Customer(
+                id: $command->customerId,
+                name: $command->customerName,
+                email: $command->customerEmail,
+                createdAt: $command->createdAt,
+            );
+            $this->customerRepository->create($customer);
+        }
+
         $category = $this->ticketCategoryRepository->findById($command->categoryId);
         $this->repository->create(
             Ticket::open(

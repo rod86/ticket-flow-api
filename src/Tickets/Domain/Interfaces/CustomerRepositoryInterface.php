@@ -9,4 +9,6 @@ use App\Tickets\Domain\Customer;
 interface CustomerRepositoryInterface
 {
     public function findByEmail(string $email): ?Customer;
+
+    public function create(Customer $customer): void;
 }

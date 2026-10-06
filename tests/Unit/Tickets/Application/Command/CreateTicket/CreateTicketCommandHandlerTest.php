@@ -73,4 +73,48 @@ final class CreateTicketCommandHandlerTest extends TestCase
         );
         $handler->__invoke($command);
     }
+
+    public function testCreatesCustomerAndTicketWhenCustomerDoesNotExist(): void
+    {
+        $createdAt = FakeValueGenerator::dateTime();
+        $customer = CustomerModelFactory::create(createdAt: $createdAt);
+        $category = TicketCategoryModelFactory::create();
+        $ticket = TicketModelFactory::create(
+            status: TicketStatus::OPEN,
+            customerId: $customer->id,
+            categoryId: $category->id,
+            createdAt: $createdAt,
+            updatedAt: $createdAt,
+        );
+
+        $command = createCommand($ticket, $customer);
+
+        $customerRepository = $this->createMock(CustomerRepositoryInterface::class);
+        $customerRepository->expects($this->once())
+            ->method('findByEmail')
+            ->with($customer->email)
+            ->willReturn(null);
+
+        $customerRepository->expects($this->once())
+            ->method('create')
+            ->with($customer);
+
+        $categoryRepository = $this->createMock(TicketCategoryRepositoryInterface::class);
+        $categoryRepository->expects($this->once())
+            ->method('findById')
+            ->with($category->id)
+            ->willReturn($category);
+
+        $ticketRepository = $this->createMock(TicketRepositoryInterface::class);
+        $ticketRepository->expects($this->once())
+            ->method('create')
+            ->with($ticket);
+
+        $handler = new CreateTicketCommandHandler(
+            $ticketRepository,
+            $customerRepository,
+            $categoryRepository,
+        );
+        $handler->__invoke($command);
+    }
 }
