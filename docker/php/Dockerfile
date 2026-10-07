@@ -1,29 +1,29 @@
-#syntax=docker/dockerfile:1
-FROM dunglas/frankenphp:1-php8.5
 
-WORKDIR /app
+# Stage 1: Install packages and php packages
+
+FROM dunglas/frankenphp:1-php8.5 AS build
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         file \
         git \
     && install-php-extensions \
-        @composer \
         apcu \
         intl \
         opcache \
-        simplexml \
-        xdebug \
         zip \
+        pdo_pgsql \
     && rm -rf /var/lib/apt/lists/*
 
-ENV COMPOSER_ALLOW_SUPERUSER=1
-ENV PHP_INI_SCAN_DIR=":$PHP_INI_DIR/app.conf.d"
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Stage 2: config and runtime setup
+
+FROM build AS setup
+
+WORKDIR /app
 
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+COPY docker/php/app.ini $PHP_INI_DIR/conf.d/zz-app.ini
+COPY docker/php/Caddyfile /etc/frankenphp/Caddyfile
 
-COPY --link docker/php/frankenphp/conf.d/*.ini $PHP_INI_DIR/app.conf.d/
-COPY --link --chmod=755 docker/php/frankenphp/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
-COPY --link docker/php/frankenphp/Caddyfile /etc/frankenphp/Caddyfile
-
-ENTRYPOINT ["docker-entrypoint"]
 CMD ["frankenphp", "run", "--config", "/etc/frankenphp/Caddyfile", "--watch"]
