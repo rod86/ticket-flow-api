@@ -54,6 +54,8 @@ test/unit: ## Execute unit tests
 test/integration: ## Execute integration tests
 	@$(API) bin/phpunit tests/Integration
 
+# TODO database/seed: ## Seed database with fixtures data
+
 # CODE QUALITY
 .PHONY: lint lint/check lint/fix
 
