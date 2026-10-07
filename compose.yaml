@@ -1,20 +1,18 @@
 # yaml-language-server: $schema=vendor/phpro/grumphp-shim/grumphp.phar/vendor/symfony/dependency-injection/Loader/schema/services.schema.json
 services:
-    php:
-        container_name: ticket-flow-api.php
+    api:
+        container_name: ticket-flow-api.api
         build:
             context: .
             dockerfile: docker/php/Dockerfile
+            target: setup
         volumes:
             - ./:/app
         environment:
             APP_ENV: ${APP_ENV:-dev}
             SERVER_NAME: ${SERVER_NAME:-localhost}
-            XDEBUG_CONFIG: client_host=${XDEBUG_CLIENT_HOST:-}
         ports:
             - "8080:80"
-            - "8443:443"
-            - "8443:443/udp"
         networks:
             - local
         extra_hosts:

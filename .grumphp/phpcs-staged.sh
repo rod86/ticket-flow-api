@@ -9,4 +9,4 @@ if [ -z "$changed_files" ]; then
     exit 0
 fi
 
-docker compose exec -T php vendor/bin/phpcs $changed_files
+docker compose exec -T api vendor/bin/phpcs $changed_files

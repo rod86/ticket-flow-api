@@ -9,4 +9,4 @@ if [ -z "$changed_files" ]; then
     exit 0
 fi
 
-docker compose exec -T php vendor/bin/phpstan analyse $changed_files
+docker compose exec -T api vendor/bin/phpstan analyse $changed_files

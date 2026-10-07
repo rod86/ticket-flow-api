@@ -1,4 +1,4 @@
-PHP=docker compose exec php
+API=docker compose exec api
 
 .PHONY: help
 help: ## List all available Makefile commands
@@ -28,10 +28,10 @@ bash: ## Go into docker service shell. Usage: make bash s=php
 .PHONY: install
 
 install: ## install composer dependencies
-	@$(PHP) composer install
+	@$(API) composer install
 
 autoload: ## Regenerate composer autoload file
-	@$(PHP) composer dump-autoload
+	@$(API) composer dump-autoload
 
 
 # TEST
@@ -40,10 +40,10 @@ autoload: ## Regenerate composer autoload file
 test: test/unit test/integration ## Execute all tests
 
 test/unit: ## Execute unit tests
-	@$(PHP) bin/phpunit tests/Unit
+	@$(API) bin/phpunit tests/Unit
 
 test/integration: ## Execute integration tests
-	@$(PHP) bin/phpunit tests/Integration
+	@$(API) bin/phpunit tests/Integration
 
 # CODE QUALITY
 .PHONY: lint lint/check lint/fix
@@ -51,10 +51,10 @@ test/integration: ## Execute integration tests
 lint: lint/stan lint/fix lint/check ## Run all quality
 
 lint/check: ## Check coding style
-	@$(PHP) vendor/bin/phpcs
+	@$(API) vendor/bin/phpcs
 
 lint/fix: ## Fix coding standards
-	@$(PHP) vendor/bin/phpcbf
+	@$(API) vendor/bin/phpcbf
 
 lint/stan: ## Run PHPStan static analysis
-	@$(PHP) vendor/bin/phpstan analyse
+	@$(API) vendor/bin/phpstan analyse
