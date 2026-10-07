@@ -33,6 +33,15 @@ install: ## install composer dependencies
 autoload: ## Regenerate composer autoload file
 	@$(API) composer dump-autoload
 
+# DATABASE
+.PHONY: database/migrate database/status database/reset
+
+database/migrate: ## Run migrations
+	@$(API) bin/console doctrine:migrations:migrate --no-interaction
+
+database/status: ## View migrations status
+	@$(API) bin/console doctrine:migrations:status
+	@$(API) bin/console doctrine:migrations:list
 
 # TEST
 .PHONY: test/unit test/integration
