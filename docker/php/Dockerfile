@@ -1,7 +1,5 @@
 
-# Stage 1: Install packages and php packages
-
-FROM dunglas/frankenphp:1-php8.5 AS build
+FROM dunglas/frankenphp:1-php8.5 AS base
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         file \
@@ -16,9 +14,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Stage 2: config and runtime setup
 
-FROM build AS setup
+FROM base AS development
+
+RUN install-php-extensions xdebug
 
 WORKDIR /app
 
