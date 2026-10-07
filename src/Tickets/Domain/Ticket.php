@@ -13,8 +13,8 @@ final class Ticket extends Entity
         private string $subject,
         private string $description,
         private TicketStatus $status,
-        private string $customerId,
-        private string $categoryId,
+        private Customer $customer,
+        private TicketCategory $category,
         private \DateTimeImmutable $createdAt,
         private \DateTimeImmutable $updatedAt,
     ) {
@@ -40,14 +40,14 @@ final class Ticket extends Entity
         return $this->status;
     }
 
-    public function customerId(): string
+    public function customer(): Customer
     {
-        return $this->customerId;
+        return $this->customer;
     }
 
-    public function categoryId(): string
+    public function category(): TicketCategory
     {
-        return $this->categoryId;
+        return $this->category;
     }
 
     public function createdAt(): \DateTimeImmutable
@@ -64,8 +64,8 @@ final class Ticket extends Entity
         string $id,
         string $subject,
         string $description,
-        string $customerId,
-        string $categoryId,
+        Customer $customer,
+        TicketCategory $category,
         \DateTimeImmutable $createdAt,
     ): self {
         return new self(
@@ -73,8 +73,8 @@ final class Ticket extends Entity
             subject: $subject,
             description: $description,
             status: TicketStatus::OPEN,
-            customerId: $customerId,
-            categoryId: $categoryId,
+            customer: $customer,
+            category: $category,
             createdAt: $createdAt,
             updatedAt: $createdAt,
         );
@@ -87,8 +87,8 @@ final class Ticket extends Entity
             'subject' => $this->subject,
             'description' => $this->description,
             'status' => $this->status,
-            'customer_id' => $this->customerId,
-            'category_id' => $this->categoryId,
+            'customer' => $this->customer->toArray(),
+            'category' => $this->category->toArray(),
             'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
             'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
         ];

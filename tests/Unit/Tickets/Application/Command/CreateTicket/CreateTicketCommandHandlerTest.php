@@ -28,7 +28,7 @@ function createCommand(Ticket $ticket, Customer $customer): CreateTicketCommand
         customerId: $customer->id(),
         customerName: $customer->name(),
         customerEmail: $customer->email(),
-        categoryId: $ticket->categoryId(),
+        categoryId: $ticket->category()->id(),
         createdAt: $ticket->createdAt(),
     );
 }
@@ -38,15 +38,14 @@ final class CreateTicketCommandHandlerTest extends TestCase
     public function testCreatesTicket(): void
     {
         $createdAt = FakeValueGenerator::dateTime();
-        $customer = CustomerModelFactory::create();
-        $category = TicketCategoryModelFactory::create();
+        $customer = CustomerModelFactory::create(createdAt: $createdAt);
         $ticket = TicketModelFactory::create(
             status: TicketStatus::OPEN,
-            customerId: $customer->id(),
-            categoryId: $category->id(),
+            customer: $customer,
             createdAt: $createdAt,
             updatedAt: $createdAt,
         );
+        $category = $ticket->category();
 
         $command = createCommand($ticket, $customer);
 
@@ -82,14 +81,13 @@ final class CreateTicketCommandHandlerTest extends TestCase
     {
         $createdAt = FakeValueGenerator::dateTime();
         $customer = CustomerModelFactory::create(createdAt: $createdAt);
-        $category = TicketCategoryModelFactory::create();
         $ticket = TicketModelFactory::create(
             status: TicketStatus::OPEN,
-            customerId: $customer->id(),
-            categoryId: $category->id(),
+            customer: $customer,
             createdAt: $createdAt,
             updatedAt: $createdAt,
         );
+        $category = $ticket->category();
 
         $command = createCommand($ticket, $customer);
 
@@ -126,14 +124,13 @@ final class CreateTicketCommandHandlerTest extends TestCase
     {
         $createdAt = FakeValueGenerator::dateTime();
         $customer = CustomerModelFactory::create(createdAt: $createdAt);
-        $category = TicketCategoryModelFactory::create();
         $ticket = TicketModelFactory::create(
             status: TicketStatus::OPEN,
-            customerId: $customer->id(),
-            categoryId: $category->id(),
+            customer: $customer,
             createdAt: $createdAt,
             updatedAt: $createdAt,
         );
+        $category = $ticket->category();
 
         $command = createCommand($ticket, $customer);
 

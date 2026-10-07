@@ -41,8 +41,8 @@ final readonly class CreateTicketCommandHandler
                 id: $command->id,
                 subject: $command->subject,
                 description: $command->description,
-                customerId: $customer->id(),
-                categoryId: $category->id(),
+                customer: $customer,
+                category: $category,
                 createdAt: $command->createdAt,
             )
         );
