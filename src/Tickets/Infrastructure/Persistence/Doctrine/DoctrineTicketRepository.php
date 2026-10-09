@@ -16,7 +16,8 @@ final readonly class DoctrineTicketRepository implements TicketRepositoryInterfa
 
     public function create(Ticket $ticket): void
     {
-        throw new \Exception('not implemented');
+        $this->entityManager->persist($ticket);
+        $this->entityManager->flush();
     }
 
     public function findById(string $id): ?Ticket
