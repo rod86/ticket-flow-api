@@ -34,7 +34,7 @@ autoload: ## Regenerate composer autoload file
 	@$(API) composer dump-autoload
 
 # DATABASE
-.PHONY: database/migrate database/status database/reset
+.PHONY: database/migrate database/status database/reset database/test-setup
 
 database/migrate: ## Run migrations
 	@$(API) bin/console doctrine:migrations:migrate --no-interaction
@@ -42,6 +42,12 @@ database/migrate: ## Run migrations
 database/status: ## View migrations status
 	@$(API) bin/console doctrine:migrations:status
 	@$(API) bin/console doctrine:migrations:list
+
+database/test-setup: ## Create and migrate the test database
+	@$(API) bin/console doctrine:database:create --env=test --if-not-exists
+	@$(API) bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+# TODO database/seed: ## Seed database with fixtures data
 
 # TEST
 .PHONY: test/unit test/integration
@@ -53,8 +59,6 @@ test/unit: ## Execute unit tests
 
 test/integration: ## Execute integration tests
 	@$(API) bin/phpunit tests/Integration
-
-# TODO database/seed: ## Seed database with fixtures data
 
 # CODE QUALITY
 .PHONY: lint lint/check lint/fix
