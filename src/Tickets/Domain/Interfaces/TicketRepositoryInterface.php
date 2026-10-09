@@ -9,4 +9,6 @@ use App\Tickets\Domain\Ticket;
 interface TicketRepositoryInterface
 {
     public function create(Ticket $ticket): void;
+
+    public function findById(string $id): ?Ticket;
 }
