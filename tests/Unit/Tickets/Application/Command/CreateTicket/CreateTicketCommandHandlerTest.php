@@ -146,17 +146,15 @@ final class CreateTicketCommandHandlerTest extends TestCase
 
         $ticketRepository = $this->createStub(TicketRepositoryInterface::class);
 
+        $this->expectExceptionObject(
+            TicketCategoryNotFoundException::withId($category->id())
+        );
 
         $handler = new CreateTicketCommandHandler(
             $ticketRepository,
             $customerRepository,
             $categoryRepository,
         );
-
-        $this->expectExceptionObject(
-            TicketCategoryNotFoundException::withId($category->id())
-        );
-
         $handler->__invoke($command);
     }
 }
