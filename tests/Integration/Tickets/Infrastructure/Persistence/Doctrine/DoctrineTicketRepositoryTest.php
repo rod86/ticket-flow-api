@@ -6,6 +6,7 @@ namespace App\Tests\Integration\Tickets\Infrastructure\Persistence\Doctrine;
 
 use App\Tests\Lib\Fixtures\CustomerFixture;
 use App\Tests\Lib\Fixtures\TicketFixture;
+use App\Tests\Lib\ValueGenerator\FakeValueGenerator;
 use App\Tickets\Domain\Customer;
 use App\Tickets\Domain\TicketCategory;
 use App\Tickets\Infrastructure\Persistence\Doctrine\DoctrineTicketRepository;
@@ -56,5 +57,12 @@ final class DoctrineTicketRepositoryTest extends KernelTestCase
         $result = $this->repository->findById($ticket->id());
 
         $this->assertEquals($ticket, $result);
+    }
+
+    public function testFindByIdReturnsNullWhenNotFound(): void
+    {
+        $result = $this->repository->findById(FakeValueGenerator::uuid());
+
+        $this->assertNull($result);
     }
 }
