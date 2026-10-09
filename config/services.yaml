@@ -22,3 +22,9 @@ services:
     App\UI\Http\EventListener\ApiExceptionListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
+
+when@test:
+    services:
+        App\Tickets\Infrastructure\Persistence\Doctrine\DoctrineTicketRepository:
+            autowire: true
+            public: true
