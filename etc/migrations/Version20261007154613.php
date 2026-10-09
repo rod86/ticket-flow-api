@@ -22,24 +22,24 @@ final class Version20261007154613 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
             CREATE TABLE customers (
+              id UUID NOT NULL,
               name VARCHAR(100) NOT NULL,
               email VARCHAR(100) NOT NULL,
               created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
-              id UUID NOT NULL,
               PRIMARY KEY (id)
             )
         SQL);
         $this->addSql('CREATE UNIQUE INDEX uniq_customers_email ON customers (email)');
         $this->addSql(<<<'SQL'
             CREATE TABLE tickets (
+              id UUID NOT NULL,
               subject VARCHAR(255) NOT NULL,
               description TEXT NOT NULL,
               status VARCHAR(20) NOT NULL,
-              created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
-              updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
-              id UUID NOT NULL,
               category_id UUID NOT NULL,
               customer_id UUID NOT NULL,
+              created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
+              updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
               PRIMARY KEY (id)
             )
         SQL);
@@ -47,8 +47,8 @@ final class Version20261007154613 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_54469DF49395C3F3 ON tickets (customer_id)');
         $this->addSql(<<<'SQL'
             CREATE TABLE tickets_categories (
-              name VARCHAR(50) NOT NULL,
               id UUID NOT NULL,
+              name VARCHAR(50) NOT NULL,
               PRIMARY KEY (id)
             )
         SQL);

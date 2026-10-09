@@ -26,7 +26,7 @@ final class TicketModelFactory
             id: $id ?? FakeValueGenerator::uuid(),
             subject: $subject ?? FakeValueGenerator::sentence(),
             description: $description ?? FakeValueGenerator::text(),
-            status: $status ?? FakeValueGenerator::randomElement(TicketStatus::values()),
+            status: $status ?? FakeValueGenerator::randomElement(TicketStatus::cases()),
             customer: $customer ?? CustomerModelFactory::create(),
             category: $category ?? TicketCategoryModelFactory::create(),
             createdAt: $createdAt ?? FakeValueGenerator::dateTime('-2 months', 'now'),
