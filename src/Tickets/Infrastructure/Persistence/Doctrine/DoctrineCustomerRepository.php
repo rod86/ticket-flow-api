@@ -21,6 +21,7 @@ final readonly class DoctrineCustomerRepository implements CustomerRepositoryInt
 
     public function create(Customer $customer): void
     {
-        throw new \LogicException('Not implemented');
+        $this->entityManager->persist($customer);
+        $this->entityManager->flush();
     }
 }

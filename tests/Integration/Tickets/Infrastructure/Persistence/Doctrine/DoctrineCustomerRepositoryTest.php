@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Integration\Tickets\Infrastructure\Persistence\Doctrine;
 
 use App\Tests\Lib\Fixtures\CustomerFixture;
+use App\Tests\Lib\ModelFactory\CustomerModelFactory;
+use App\Tests\Lib\Utils\Database;
 use App\Tests\Lib\ValueGenerator\FakeValueGenerator;
 use App\Tickets\Infrastructure\Persistence\Doctrine\DoctrineCustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,6 +18,8 @@ final class DoctrineCustomerRepositoryTest extends KernelTestCase
     private DoctrineCustomerRepository $repository;
     private CustomerFixture $customerFixture;
 
+    private Database $database;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -23,6 +27,7 @@ final class DoctrineCustomerRepositoryTest extends KernelTestCase
         $container = static::getContainer();
         $this->em = $container->get(EntityManagerInterface::class);
         $this->repository = new DoctrineCustomerRepository($this->em);
+        $this->database = new Database($this->em);
 
         $this->customerFixture = new CustomerFixture($this->em->getConnection());
     }
@@ -50,5 +55,16 @@ final class DoctrineCustomerRepositoryTest extends KernelTestCase
         $result = $this->repository->findByEmail(FakeValueGenerator::email());
 
         $this->assertNull($result);
+    }
+
+    public function testCreatesCustomer(): void
+    {
+        $customer = CustomerModelFactory::create();
+        $this->customerFixture->register($customer->id());
+
+        $this->repository->create($customer);
+
+        $result = $this->database->getCustomerById($customer->id());
+        $this->assertEquals($customer, $result);
     }
 }
