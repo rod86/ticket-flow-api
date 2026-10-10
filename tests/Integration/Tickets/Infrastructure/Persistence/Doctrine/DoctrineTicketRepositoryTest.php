@@ -32,7 +32,7 @@ final class DoctrineTicketRepositoryTest extends KernelTestCase
         self::bootKernel();
         $container = static::getContainer();
         $this->em = $container->get(EntityManagerInterface::class);
-        $this->repository = $container->get(DoctrineTicketRepository::class);
+        $this->repository = new DoctrineTicketRepository($this->em);
         $connection = $this->em->getConnection();
         $this->database = new Database($connection);
 
