@@ -4,40 +4,33 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Tickets\Infrastructure\Persistence\Doctrine;
 
+use App\Tests\Lib\DatabaseTestCase;
 use App\Tests\Lib\Fixtures\CustomerFixture;
 use App\Tests\Lib\Fixtures\TicketFixture;
 use App\Tests\Lib\ModelFactory\TicketModelFactory;
-use App\Tests\Lib\Utils\Database;
 use App\Tests\Lib\ValueGenerator\FakeValueGenerator;
 use App\Tickets\Domain\Customer;
 use App\Tickets\Domain\TicketCategory;
 use App\Tickets\Infrastructure\Persistence\Doctrine\DoctrineTicketRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-final class DoctrineTicketRepositoryTest extends KernelTestCase
+final class DoctrineTicketRepositoryTest extends DatabaseTestCase
 {
-    private ?EntityManagerInterface $em;
     private DoctrineTicketRepository $repository;
     private TicketFixture $ticketFixture;
     private CustomerFixture $customerFixture;
 
     private Customer $customer;
     private TicketCategory $billingCategory;
-    private Database $database;
 
     protected function setUp(): void
     {
         parent::setUp();
-        self::bootKernel();
-        $container = static::getContainer();
-        $this->em = $container->get(EntityManagerInterface::class);
-        $this->repository = new DoctrineTicketRepository($this->em);
-        $connection = $this->em->getConnection();
-        $this->database = new Database($this->em);
 
+        $connection = $this->em->getConnection();
+        $this->repository = new DoctrineTicketRepository($this->em);
         $this->ticketFixture = new TicketFixture($connection);
         $this->customerFixture = new CustomerFixture($connection);
+
         $this->customer = $this->customerFixture->insert();
         $this->billingCategory = new TicketCategory(
             id: '8e56a31f-fe37-4dd5-831f-edff5bd6452e',
@@ -50,8 +43,6 @@ final class DoctrineTicketRepositoryTest extends KernelTestCase
         $this->ticketFixture->cleanup();
         $this->customerFixture->cleanup();
 
-        $this->em->close();
-        $this->em = null;
         parent::tearDown();
     }
 
@@ -81,7 +72,7 @@ final class DoctrineTicketRepositoryTest extends KernelTestCase
 
         $this->repository->create($ticket);
 
-        $result = $this->database->getTicketById($ticket->id());
+        $result = $this->getTicketById($ticket->id());
         $this->assertEquals($ticket, $result);
     }
 }
