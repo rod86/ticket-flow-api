@@ -16,6 +16,6 @@ final readonly class DoctrineTicketCategoryRepository implements TicketCategoryR
 
     public function findById(string $id): ?TicketCategory
     {
-        return $this->entityManager->getRepository(TicketCategory::class)->findOneBy(['id' => $id]);
+        return $this->entityManager->getRepository(TicketCategory::class)->find($id);
     }
 }

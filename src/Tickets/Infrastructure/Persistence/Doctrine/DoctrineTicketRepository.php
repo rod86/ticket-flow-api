@@ -22,6 +22,6 @@ final readonly class DoctrineTicketRepository implements TicketRepositoryInterfa
 
     public function findById(string $id): ?Ticket
     {
-        return $this->entityManager->getRepository(Ticket::class)->findOneBy(['id' => $id]);
+        return $this->entityManager->getRepository(Ticket::class)->find($id);
     }
 }

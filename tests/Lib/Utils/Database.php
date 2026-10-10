@@ -4,29 +4,18 @@ declare(strict_types=1);
 
 namespace App\Tests\Lib\Utils;
 
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception;
+use App\Tickets\Domain\Ticket;
+use Doctrine\ORM\EntityManagerInterface;
 
 final readonly class Database
 {
     public function __construct(
-        private Connection $connection
+        private EntityManagerInterface $em
     ) {
     }
 
-    /**
-     * @return array<string, mixed>|null
-     * @throws Exception
-     */
-    public function getTicketById(string $id): ?array
+    public function getTicketById(string $id): ?Ticket
     {
-        $row = $this->connection->createQueryBuilder()
-            ->select('*')
-            ->from('tickets')
-            ->where('id = :id')
-            ->setParameter('id', $id)
-            ->fetchAssociative();
-
-        return $row === false ? null : $row;
+        return $this->em->getRepository(Ticket::class)->findOneBy(['id' => $id]);
     }
 }

@@ -34,7 +34,7 @@ final class DoctrineTicketRepositoryTest extends KernelTestCase
         $this->em = $container->get(EntityManagerInterface::class);
         $this->repository = new DoctrineTicketRepository($this->em);
         $connection = $this->em->getConnection();
-        $this->database = new Database($connection);
+        $this->database = new Database($this->em);
 
         $this->ticketFixture = new TicketFixture($connection);
         $this->customerFixture = new CustomerFixture($connection);
@@ -82,15 +82,6 @@ final class DoctrineTicketRepositoryTest extends KernelTestCase
         $this->repository->create($ticket);
 
         $result = $this->database->getTicketById($ticket->id());
-        $this->assertEquals([
-            'id' => $ticket->id(),
-            'subject' => $ticket->subject(),
-            'description' => $ticket->description(),
-            'status' => $ticket->status()->value,
-            'category_id' => $ticket->category()->id(),
-            'customer_id' => $ticket->customer()->id(),
-            'created_at' => $ticket->createdAt()->format('Y-m-d H:i:s'),
-            'updated_at' => $ticket->updatedAt()->format('Y-m-d H:i:s'),
-        ], $result);
+        $this->assertEquals($ticket, $result);
     }
 }
