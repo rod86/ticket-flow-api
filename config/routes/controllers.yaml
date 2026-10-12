@@ -3,3 +3,8 @@ home:
     path: /tickets
     methods: [POST]
     controller: App\UI\Http\Controller\Tickets\CreateTicketController
+
+find_ticket_by_id:
+    path: /tickets/{id}
+    methods: [GET]
+    controller: App\UI\Http\Controller\Tickets\FindTicketByIdController
