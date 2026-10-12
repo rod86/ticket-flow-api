@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tickets\Application\Command\CreateTicket;
 
-final readonly class CreateTicketCommand
+use App\Shared\Application\Bus\CommandInterface;
+
+final readonly class CreateTicketCommand implements CommandInterface
 {
     public function __construct(
         public string $id,

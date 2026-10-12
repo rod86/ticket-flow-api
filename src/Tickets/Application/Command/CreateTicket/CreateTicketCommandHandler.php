@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tickets\Application\Command\CreateTicket;
 
+use App\Shared\Application\Bus\CommandHandlerInterface;
 use App\Tickets\Domain\Customer;
 use App\Tickets\Domain\Exception\TicketCategoryNotFoundException;
 use App\Tickets\Domain\Interfaces\CustomerRepositoryInterface;
@@ -11,7 +12,7 @@ use App\Tickets\Domain\Interfaces\TicketCategoryRepositoryInterface;
 use App\Tickets\Domain\Interfaces\TicketRepositoryInterface;
 use App\Tickets\Domain\Ticket;
 
-final readonly class CreateTicketCommandHandler
+final readonly class CreateTicketCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private TicketRepositoryInterface $repository,

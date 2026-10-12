@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\UI\Http\Controllers\Tickets;
 
+use App\Tests\Lib\ModelFactory\TicketModelFactory;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -13,12 +14,13 @@ final class CreateTicketControllerTest extends WebTestCase
 {
     public function testCreatesTicket(): void
     {
+        $ticket = TicketModelFactory::create();
         $data = [
-            'title' => 'Test subject',
-            'description' => 'Lorem ipsum dolor sit amet.',
-            'customer_email' => 'johndoe@email.com',
-            'customer_name' => 'John Doe',
-            'category_id' => '2c1a9600-bb4c-4b70-9b92-d3bb5e0c837b',
+            'subject' => $ticket->subject(),
+            'description' => $ticket->description(),
+            'customer_email' => $ticket->customer()->email(),
+            'customer_name' => $ticket->customer()->name(),
+            'category_id' => '8e56a31f-fe37-4dd5-831f-edff5bd6452e',
         ];
 
         $client = static::createClient();
@@ -45,7 +47,7 @@ final class CreateTicketControllerTest extends WebTestCase
         );
         $response = json_decode($client->getResponse()->getContent(), true);
         Assert::assertSame([
-            'title' => 'This value is required.',
+            'subject' => 'This value is required.',
             'description' => 'This value is required.',
             'customer_email' => 'This value is required.',
             'customer_name' => 'This value is required.',

@@ -12,7 +12,7 @@ final readonly class CreateTicketRequest extends AbstractJsonRequest
     public function validationRules(): array
     {
         return [
-            'title' => new Assert\NotBlank(),
+            'subject' => new Assert\NotBlank(),
             'description' => new Assert\NotBlank(),
             'customer_email' => [
                 new Assert\NotBlank(),
